@@ -303,39 +303,31 @@ export function App() {
 
   const isHeroVisible = prefersReducedMotion || hasHeroEntered
   const heroItemClass = `hero-item ${isHeroVisible ? "is-visible" : ""}`
-  const navBrandClass = isNavRaised ? "text-foreground" : "text-[var(--paper-950)]"
-  const navLinkClass = isNavRaised
-    ? "text-foreground/78 hover:text-foreground"
-    : "text-white/80 hover:text-white"
 
   return (
     <div className="min-h-svh overflow-x-hidden bg-background text-foreground">
       <nav
-        className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-          isNavRaised
-            ? "border-border/70 bg-background/84 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-            : "border-white/10 bg-black/22"
-        }`}
+        className={`landing-nav fixed inset-x-0 top-0 z-50 ${isNavRaised ? "is-raised" : ""}`}
       >
         <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-6">
           <a
             href="#top"
-            className="brand-link flex items-center gap-2.5"
+            className="brand-link landing-nav-link flex items-center gap-2.5"
             aria-label="Back to top"
             onDoubleClick={triggerSecretBloom}
           >
             <span className="brand-mark-wrap">
               <EmruMark size={24} />
             </span>
-            <span className={`font-display text-[1.7rem] leading-none ${navBrandClass}`}>
+            <span className="landing-nav-brand font-display text-[1.7rem] leading-none">
               emru
             </span>
           </a>
           <div className="flex items-center gap-4 text-sm">
-            <a href="#workspace" className={navLinkClass}>
+            <a href="#workspace" className="landing-nav-link">
               how it works
             </a>
-            <a href="/app" className={navLinkClass}>
+            <a href="/app" className="landing-nav-link">
               open workspace
             </a>
           </div>
@@ -355,13 +347,13 @@ export function App() {
               <EmruMark size={58} />
             </div>
             <h1
-              className={`${heroItemClass} mt-8 max-w-[11ch] font-display text-[clamp(2.5rem,6vw,5.4rem)] leading-[0.95] tracking-tight text-[var(--paper-950)]`}
+              className={`${heroItemClass} mt-8 max-w-[11ch] font-display text-[clamp(2.5rem,6vw,5.4rem)] leading-[0.95] tracking-tight text-[var(--landing-hero-title)]`}
               style={delayStyle("--hero-delay", 2, HERO_ENTER_STEP_MS)}
             >
               your day, clearly arranged.
             </h1>
             <p
-              className={`${heroItemClass} mt-6 max-w-xl text-lg leading-relaxed text-[color:rgb(228_223_209_/_0.76)] sm:text-[1.35rem]`}
+              className={`${heroItemClass} mt-6 max-w-xl text-lg leading-relaxed text-[var(--landing-hero-copy)] sm:text-[1.35rem]`}
               style={delayStyle("--hero-delay", 3, HERO_ENTER_STEP_MS)}
             >
               tasks, notes, and focus in one calm canvas. local-first from the
@@ -379,19 +371,19 @@ export function App() {
             >
               <a
                 href="/app"
-                className="cta-shadow cta-delight pressable group inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-8 py-3.5 text-base font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]"
+                className="landing-cta cta-shadow cta-delight pressable group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-base font-medium"
               >
                 open workspace
                 <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
                   <ArrowIcon />
                 </span>
               </a>
-              <a href="#workspace" className="text-sm text-[var(--paper-950)]/72 hover:text-[var(--paper-950)]">
+              <a href="#workspace" className="landing-inline-link text-sm">
                 see the canvas workflow
               </a>
             </div>
             <p
-              className={`${heroItemClass} mt-5 text-sm text-[color:rgb(228_223_209_/_0.46)]`}
+              className={`${heroItemClass} landing-hero-subtle mt-5 text-sm`}
               style={delayStyle("--hero-delay", 5, HERO_ENTER_STEP_MS)}
             >
               no signup. everything stays in your browser.
@@ -439,7 +431,7 @@ export function App() {
         </a>
       </section>
 
-      <div className="h-24 bg-gradient-to-b from-[var(--canvas-dark)] to-background" />
+      <div className="h-24 bg-gradient-to-b from-[var(--landing-transition-start)] to-background" />
 
       <main className="layout-main">
         <FeatureSection
@@ -525,7 +517,7 @@ export function App() {
               </IconShell>
               <p className="text-sm font-medium">data residency</p>
             </div>
-            <div className="mt-4 space-y-2 font-mono text-xs text-muted-foreground">
+            <div className="mt-4 space-y-2 font-mono text-sm text-muted-foreground">
               <div className="flex justify-between">
                 <span>emru:blocks</span>
                 <span>localStorage</span>
@@ -551,7 +543,7 @@ export function App() {
               <button
                 type="button"
                 onClick={handleCopyPrivacy}
-                className="pressable rounded-full border border-border bg-secondary px-3.5 py-1.5 text-xs font-medium text-foreground/85 hover:border-primary/40"
+                className="pressable rounded-full border border-border bg-secondary px-3.5 py-1.5 text-sm font-medium text-foreground/85 hover:border-primary/40"
               >
                 copy privacy promise
               </button>
@@ -582,7 +574,7 @@ export function App() {
               delay={70}
               className="max-w-sm text-sm leading-relaxed text-muted-foreground"
             >
-              The core loop is simple: capture what matters, arrange it in
+              the core loop is simple: capture what matters, arrange it in
               space, and move through your day with less friction.
             </Reveal>
           </div>
@@ -596,7 +588,7 @@ export function App() {
                         <h3 className="font-display text-xl text-foreground">{feature.title}</h3>
                         <p className="mt-1 text-sm text-muted-foreground">{feature.description}</p>
                       </div>
-                      <span className="mt-0.5 text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
+                      <span className="mt-0.5 text-sm text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
                     </div>
                     <p className="mt-2 text-sm text-foreground/75">{feature.proof}</p>
                   </article>
@@ -627,15 +619,15 @@ export function App() {
           <div>
             <EmruMark size={50} />
           </div>
-          <h2 className="mt-6 font-display text-4xl text-[var(--paper-950)] sm:text-5xl">
+          <h2 className="mt-6 font-display text-4xl text-[var(--landing-hero-title)] sm:text-5xl">
             start your day in one place
           </h2>
-          <p className="mt-3 max-w-sm text-base text-[color:rgb(228_223_209_/_0.72)]">
+          <p className="mt-3 max-w-sm text-base text-[var(--landing-hero-copy)]">
             keep it light, private, and clear from the first block.
           </p>
           <a
             href="/app"
-            className="cta-shadow cta-delight pressable group mt-8 inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-9 py-4 text-lg font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]"
+            className="landing-cta cta-shadow cta-delight pressable group mt-8 inline-flex items-center gap-2.5 rounded-full px-9 py-4 text-lg font-medium"
           >
             open workspace
             <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">

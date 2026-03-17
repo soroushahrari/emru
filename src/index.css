@@ -75,6 +75,34 @@
     --space-item: var(--space-sm);
     --space-group: var(--space-lg);
     --space-section: var(--space-2xl);
+
+    --landing-hero-top: #f6efe4;
+    --landing-hero-bottom: #e7dece;
+    --landing-hero-glow-primary: color-mix(in oklab, var(--dawn) 30%, transparent);
+    --landing-hero-glow-secondary: color-mix(in oklab, var(--saffron) 20%, transparent);
+    --landing-hero-title: color-mix(in oklab, var(--ink-900) 94%, transparent);
+    --landing-hero-copy: color-mix(in oklab, var(--ink-600) 94%, transparent);
+    --landing-hero-muted: color-mix(in oklab, var(--ink-600) 76%, transparent);
+    --landing-transition-start: #d8cfbe;
+    --landing-dot-grid: color-mix(in oklab, var(--ink-600) 16%, transparent);
+
+    --landing-nav-surface: color-mix(in oklab, var(--paper-950) 78%, transparent);
+    --landing-nav-border: color-mix(in oklab, var(--ink-200) 82%, transparent);
+    --landing-nav-shadow: 0 10px 28px rgba(22, 20, 15, 0.11);
+    --landing-nav-brand: color-mix(in oklab, var(--ink-900) 94%, transparent);
+    --landing-nav-link: color-mix(in oklab, var(--ink-900) 76%, transparent);
+    --landing-nav-link-hover: color-mix(in oklab, var(--ink-900) 96%, transparent);
+
+    --landing-cta-bg: color-mix(in oklab, var(--ink-900) 90%, var(--ember));
+    --landing-cta-bg-hover: color-mix(in oklab, var(--ink-600) 86%, var(--ember));
+    --landing-cta-fg: var(--paper-950);
+    --landing-cta-shadow-inset: color-mix(in oklab, var(--paper-950) 16%, transparent);
+    --landing-cta-shadow-drop: color-mix(in oklab, var(--ink-900) 20%, transparent);
+
+    --landing-scroll-border: color-mix(in oklab, var(--ink-900) 23%, transparent);
+    --landing-scroll-border-hover: color-mix(in oklab, var(--ink-900) 36%, transparent);
+    --landing-scroll-dot: color-mix(in oklab, var(--ink-900) 52%, transparent);
+    --landing-scroll-hover-bg: color-mix(in oklab, var(--paper-950) 30%, transparent);
 }
 
 .dark {
@@ -110,6 +138,34 @@
     --sidebar-accent-foreground: var(--ink-50);
     --sidebar-border: var(--ink-600);
     --sidebar-ring: var(--ember);
+
+    --landing-hero-top: color-mix(in oklab, var(--ink-950) 96%, black);
+    --landing-hero-bottom: var(--canvas-dark);
+    --landing-hero-glow-primary: color-mix(in oklab, var(--ember) 24%, transparent);
+    --landing-hero-glow-secondary: color-mix(in oklab, var(--saffron) 15%, transparent);
+    --landing-hero-title: var(--paper-950);
+    --landing-hero-copy: color-mix(in oklab, var(--paper-950) 76%, transparent);
+    --landing-hero-muted: color-mix(in oklab, var(--paper-950) 48%, transparent);
+    --landing-transition-start: var(--canvas-dark);
+    --landing-dot-grid: color-mix(in oklab, var(--ink-50) 12%, transparent);
+
+    --landing-nav-surface: color-mix(in oklab, var(--ink-950) 72%, transparent);
+    --landing-nav-border: color-mix(in oklab, var(--paper-950) 14%, transparent);
+    --landing-nav-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    --landing-nav-brand: var(--paper-950);
+    --landing-nav-link: color-mix(in oklab, var(--paper-950) 78%, transparent);
+    --landing-nav-link-hover: var(--paper-950);
+
+    --landing-cta-bg: var(--paper-950);
+    --landing-cta-bg-hover: var(--paper-900);
+    --landing-cta-fg: var(--ink-900);
+    --landing-cta-shadow-inset: color-mix(in oklab, var(--paper-950) 20%, transparent);
+    --landing-cta-shadow-drop: color-mix(in oklab, var(--paper-950) 18%, transparent);
+
+    --landing-scroll-border: color-mix(in oklab, var(--paper-950) 18%, transparent);
+    --landing-scroll-border-hover: color-mix(in oklab, var(--paper-950) 34%, transparent);
+    --landing-scroll-dot: color-mix(in oklab, var(--paper-950) 40%, transparent);
+    --landing-scroll-hover-bg: color-mix(in oklab, var(--paper-950) 5%, transparent);
 }
 
 @theme inline {
@@ -177,19 +233,20 @@
 @layer components {
   .hero-gradient {
     background:
-      radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--ember) 28%, transparent) 0%, transparent 55%),
-      linear-gradient(180deg, color-mix(in oklab, var(--ink-950) 96%, black) 0%, var(--canvas-dark) 100%);
+      radial-gradient(circle at 18% 18%, color-mix(in oklab, var(--landing-hero-glow-secondary) 78%, transparent) 0%, transparent 38%),
+      radial-gradient(circle at 78% 26%, color-mix(in oklab, var(--landing-hero-glow-primary) 82%, transparent) 0%, transparent 42%),
+      linear-gradient(180deg, var(--landing-hero-top) 0%, var(--landing-hero-bottom) 100%);
   }
 
   .hero-glow {
     background:
-      radial-gradient(circle at 50% 42%, color-mix(in oklab, var(--ember) 24%, transparent) 0%, transparent 54%),
-      radial-gradient(circle at 52% 45%, color-mix(in oklab, var(--saffron) 15%, transparent) 0%, transparent 62%);
+      radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--landing-hero-glow-primary) 80%, transparent) 0%, transparent 55%),
+      radial-gradient(circle at 52% 45%, color-mix(in oklab, var(--landing-hero-glow-secondary) 65%, transparent) 0%, transparent 62%);
     pointer-events: none;
   }
 
   .dot-grid-light {
-    background-image: radial-gradient(circle, color-mix(in oklab, var(--ink-400) 15%, transparent) 1px, transparent 1px);
+    background-image: radial-gradient(circle, var(--landing-dot-grid) 1px, transparent 1px);
     background-size: 24px 24px;
     background-position: center;
   }
@@ -199,7 +256,7 @@
     background: color-mix(in oklab, var(--card) 94%, transparent);
     color: color-mix(in oklab, var(--muted-foreground) 95%, transparent);
     border-radius: 999px;
-    font-size: 0.77rem;
+    font-size: clamp(0.8rem, 1.35vw, 0.86rem);
     letter-spacing: 0.03em;
     line-height: 1;
     padding: 0.5rem 0.75rem;
@@ -345,6 +402,72 @@
       border-color 220ms var(--ease-out-quart);
   }
 
+  .landing-nav {
+    border-bottom: 1px solid var(--landing-nav-border);
+    background: var(--landing-nav-surface);
+    backdrop-filter: blur(18px);
+    transition:
+      background-color 260ms var(--ease-out-quart),
+      border-color 260ms var(--ease-out-quart),
+      box-shadow 260ms var(--ease-out-quart);
+  }
+
+  .landing-nav.is-raised {
+    border-color: color-mix(in oklab, var(--border) 70%, transparent);
+    background: color-mix(in oklab, var(--background) 86%, transparent);
+    box-shadow: var(--landing-nav-shadow);
+  }
+
+  .landing-nav-brand {
+    color: var(--landing-nav-brand);
+    transition: color 220ms var(--ease-out-quart);
+  }
+
+  .landing-nav-link {
+    color: var(--landing-nav-link);
+    transition:
+      color 220ms var(--ease-out-quart),
+      opacity 220ms var(--ease-out-quart);
+  }
+
+  .landing-nav-link:hover {
+    color: var(--landing-nav-link-hover);
+  }
+
+  .landing-nav-link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 65%, transparent);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+
+  .landing-inline-link {
+    color: var(--landing-hero-muted);
+    transition: color 220ms var(--ease-out-quart);
+  }
+
+  .landing-inline-link:hover {
+    color: var(--landing-hero-title);
+  }
+
+  .landing-inline-link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 65%, transparent);
+    outline-offset: 3px;
+    border-radius: 0.4rem;
+  }
+
+  .landing-hero-subtle {
+    color: var(--landing-hero-muted);
+  }
+
+  .landing-cta {
+    background: var(--landing-cta-bg);
+    color: var(--landing-cta-fg);
+  }
+
+  .landing-cta:hover {
+    background: var(--landing-cta-bg-hover);
+  }
+
   .brand-link {
     transition: transform 220ms var(--ease-out-quart);
   }
@@ -434,10 +557,10 @@
     border: 1px solid color-mix(in oklab, var(--paper-950) 18%, transparent);
     border-radius: 999px;
     padding: 0.42rem 0.8rem;
-    font-size: 0.72rem;
+    font-size: clamp(0.8rem, 1.35vw, 0.88rem);
     letter-spacing: 0.04em;
-    color: color-mix(in oklab, var(--paper-950) 74%, transparent);
-    background: color-mix(in oklab, var(--paper-950) 7%, transparent);
+    color: color-mix(in oklab, var(--landing-hero-title) 78%, transparent);
+    background: color-mix(in oklab, var(--landing-hero-title) 8%, transparent);
   }
 
   .resize-grip {
@@ -465,7 +588,7 @@
     border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
     border-radius: 999px;
     padding: 0.28rem 0.65rem;
-    font-size: 0.68rem;
+    font-size: clamp(0.76rem, 1.2vw, 0.81rem);
     line-height: 1;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -529,38 +652,53 @@
   }
 
   .scroll-cue {
-    display: flex;
-    width: 20px;
-    height: 34px;
-    align-items: flex-start;
-    justify-content: center;
+    position: relative;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
     border-radius: 999px;
-    border: 1px solid color-mix(in oklab, var(--paper-950) 18%, transparent);
-    padding-top: 6px;
     transition:
       transform 220ms var(--ease-out-quart),
-      border-color 220ms var(--ease-out-quart),
       background-color 220ms var(--ease-out-quart);
+  }
+
+  .scroll-cue::before {
+    content: "";
+    width: 20px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--landing-scroll-border);
+    transition: border-color 220ms var(--ease-out-quart);
   }
 
   .scroll-cue:hover {
     transform: translateX(-50%) translateY(-2px);
-    border-color: color-mix(in oklab, var(--paper-950) 34%, transparent);
-    background: color-mix(in oklab, var(--paper-950) 4%, transparent);
+    background: var(--landing-scroll-hover-bg);
+  }
+
+  .scroll-cue:hover::before {
+    border-color: var(--landing-scroll-border-hover);
+  }
+
+  .scroll-cue:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 62%, transparent);
+    outline-offset: 4px;
   }
 
   .scroll-cue-dot {
+    position: absolute;
     width: 4px;
     height: 8px;
     border-radius: 999px;
-    background: color-mix(in oklab, var(--paper-950) 36%, transparent);
+    background: var(--landing-scroll-dot);
     animation: scroll-cue-dot 1.8s var(--ease-out-quint) infinite;
   }
 
   .cta-shadow {
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--paper-950) 20%, transparent) inset,
-      0 14px 40px color-mix(in oklab, var(--paper-950) 18%, transparent);
+      0 0 0 1px var(--landing-cta-shadow-inset) inset,
+      0 14px 40px var(--landing-cta-shadow-drop);
   }
 
 }
