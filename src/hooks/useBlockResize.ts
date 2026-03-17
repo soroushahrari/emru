@@ -58,18 +58,24 @@ export function useBlockResize(blockId: string) {
       return
     }
 
-    const nextWidth = Math.max(160, session.startWidth + (event.clientX - session.startX))
+    const nextWidth = Math.max(
+      160,
+      session.startWidth + (event.clientX - session.startX)
+    )
     const minimumHeight = getMinimumBlockHeight(block.type)
-    const nextHeight =
-      block.type === "focus"
-        ? session.startHeight
-        : Math.max(minimumHeight, session.startHeight + (event.clientY - session.startY))
+    const nextHeight = Math.max(
+      minimumHeight,
+      session.startHeight + (event.clientY - session.startY)
+    )
 
     useBlocksStore
       .getState()
       .setBlockSize({ id: blockId, width: nextWidth, height: nextHeight })
 
-    if (nextWidth !== session.startWidth || nextHeight !== session.startHeight) {
+    if (
+      nextWidth !== session.startWidth ||
+      nextHeight !== session.startHeight
+    ) {
       sessionRef.current = {
         ...session,
         moved: true,
@@ -98,7 +104,9 @@ export function useBlockResize(blockId: string) {
     canvasState.setCursor(canvasState.tool === "pan" ? "grab" : "default")
   }
 
-  const onPointerCancel: React.PointerEventHandler<HTMLDivElement> = (event) => {
+  const onPointerCancel: React.PointerEventHandler<HTMLDivElement> = (
+    event
+  ) => {
     const session = sessionRef.current
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)
@@ -107,13 +115,11 @@ export function useBlockResize(blockId: string) {
     if (session?.moved && snapshotRef.current) {
       const snapshotBlock = snapshotRef.current.blocks[blockId]
       if (snapshotBlock) {
-        useBlocksStore
-          .getState()
-          .setBlockSize({
-            id: blockId,
-            width: snapshotBlock.width,
-            height: snapshotBlock.height,
-          })
+        useBlocksStore.getState().setBlockSize({
+          id: blockId,
+          width: snapshotBlock.width,
+          height: snapshotBlock.height,
+        })
       }
     }
 

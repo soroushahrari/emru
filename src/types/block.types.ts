@@ -22,7 +22,14 @@ export interface NotesBlockData {
 
 export interface FocusBlockData {
   title: string
-  seconds: number
+  focusMinutes: number
+  restMinutes: number
+  phase: "focus" | "rest"
+  status: "idle" | "running" | "paused"
+  startedAt: number | null
+  endsAt: number | null
+  remainingMs: number
+  compact: boolean
 }
 
 export interface TasksBlock extends BlockBase {

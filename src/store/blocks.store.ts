@@ -1,8 +1,15 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-import { sanitizeBlock, sanitizeBlocksRecord } from "@/lib/utils/block-sanitizers"
-import type { Block, BlockPositionUpdate, BlockSizeUpdate } from "@/types/block.types"
+import {
+  sanitizeBlock,
+  sanitizeBlocksRecord,
+} from "@/lib/utils/block-sanitizers"
+import type {
+  Block,
+  BlockPositionUpdate,
+  BlockSizeUpdate,
+} from "@/types/block.types"
 
 interface BlocksSnapshot {
   blocks: Record<string, Block>
@@ -51,6 +58,13 @@ export const useBlocksStore = create<BlocksStore>()(
       addBlock: (block) => {
         const normalized = sanitizeBlock(block)
         if (!normalized) {
+          return
+        }
+
+        if (
+          normalized.type === "focus" &&
+          Object.values(get().blocks).some((item) => item.type === "focus")
+        ) {
           return
         }
 
@@ -255,7 +269,8 @@ export const useBlocksStore = create<BlocksStore>()(
           9
         )
         const persistedNextZ =
-          typeof persisted.nextZ === "number" && Number.isFinite(persisted.nextZ)
+          typeof persisted.nextZ === "number" &&
+          Number.isFinite(persisted.nextZ)
             ? Math.max(1, Math.round(persisted.nextZ))
             : highestZ + 1
 

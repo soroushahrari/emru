@@ -7,7 +7,11 @@ import {
   type ReactNode,
 } from "react"
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import type { BlockType } from "@/types/block.types"
 import type { CanvasTool } from "@/types/canvas.types"
@@ -17,12 +21,12 @@ interface ToolbarProps {
   onSelectTool: () => void
   onPanTool: () => void
   onAddBlock: (type: BlockType) => void
+  disableFocusAdd: boolean
   onToggleSettings: () => void
   settingsOpen: boolean
 }
 
-interface TooltipIconButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface TooltipIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string
   shortcut?: string
   active?: boolean
@@ -68,6 +72,7 @@ export const Toolbar = memo(function Toolbar({
   onSelectTool,
   onPanTool,
   onAddBlock,
+  disableFocusAdd,
   onToggleSettings,
   settingsOpen,
 }: ToolbarProps) {
@@ -187,48 +192,54 @@ export const Toolbar = memo(function Toolbar({
             "absolute bottom-[3.25rem] left-1/2 z-50 w-40 -translate-x-1/2 rounded-xl bg-card/98 p-1.5 shadow-[0_12px_24px_rgba(0,0,0,0.22)]",
             "origin-bottom transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]",
             addMenuOpen
-              ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
-              : "pointer-events-none opacity-0 translate-y-1 scale-95"
+              ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none translate-y-1 scale-95 opacity-0"
           )}
           role="menu"
           aria-label="Add block menu"
         >
-            <button
-              type="button"
-              className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
-              onClick={() => {
-                onAddBlock("tasks")
-                setAddMenuOpen(false)
-              }}
-              role="menuitem"
-            >
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary/70" />
-              Tasks
-            </button>
-            <button
-              type="button"
-              className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
-              onClick={() => {
-                onAddBlock("notes")
-                setAddMenuOpen(false)
-              }}
-              role="menuitem"
-            >
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground/50" />
-              Notes
-            </button>
-            <button
-              type="button"
-              className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
-              onClick={() => {
-                onAddBlock("focus")
-                setAddMenuOpen(false)
-              }}
-              role="menuitem"
-            >
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent/80" />
-              Focus
-            </button>
+          <button
+            type="button"
+            className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
+            onClick={() => {
+              onAddBlock("tasks")
+              setAddMenuOpen(false)
+            }}
+            role="menuitem"
+          >
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary/70" />
+            Tasks
+          </button>
+          <button
+            type="button"
+            className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
+            onClick={() => {
+              onAddBlock("notes")
+              setAddMenuOpen(false)
+            }}
+            role="menuitem"
+          >
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground/50" />
+            Notes
+          </button>
+          <button
+            type="button"
+            disabled={disableFocusAdd}
+            className={cn(
+              "canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors",
+              disableFocusAdd
+                ? "cursor-not-allowed text-muted-foreground/80"
+                : "hover:bg-secondary/70"
+            )}
+            onClick={() => {
+              onAddBlock("focus")
+              setAddMenuOpen(false)
+            }}
+            role="menuitem"
+          >
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent/80" />
+            {disableFocusAdd ? "Focus (already added)" : "Focus"}
+          </button>
         </div>
       </div>
 

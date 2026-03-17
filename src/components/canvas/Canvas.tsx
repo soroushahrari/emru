@@ -68,7 +68,11 @@ function createBlock(type: BlockType, x: number, y: number): Block {
       zIndex: 10,
       data: {
         title: "tasks",
-        items: ["Review priorities", "Ship one meaningful thing", "Close the day calm"],
+        items: [
+          "Review priorities",
+          "Ship one meaningful thing",
+          "Close the day calm",
+        ],
       },
     }
   }
@@ -94,14 +98,26 @@ function createBlock(type: BlockType, x: number, y: number): Block {
     type,
     x,
     y,
-    width: 280,
-    height: 180,
+    width: 320,
+    height: 280,
     zIndex: 10,
     data: {
       title: "focus",
-      seconds: 25 * 60,
+      focusMinutes: 25,
+      restMinutes: 5,
+      phase: "focus",
+      status: "idle",
+      startedAt: null,
+      endsAt: null,
+      remainingMs: 25 * 60 * 1000,
+      compact: false,
     },
   }
+}
+
+function getExistingFocusBlockId(blocks: Record<string, Block>) {
+  const existing = Object.values(blocks).find((block) => block.type === "focus")
+  return existing?.id ?? null
 }
 
 export function Canvas() {
@@ -112,12 +128,17 @@ export function Canvas() {
   const [transition, setTransition] = useState<string | null>(null)
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const [showOnboarding, setShowOnboarding] = useState(() => shouldShowOnboarding())
+  const [showOnboarding, setShowOnboarding] = useState(() =>
+    shouldShowOnboarding()
+  )
 
   const tool = useCanvasStore((state) => state.tool)
   const zoom = useCanvasStore((state) => state.zoom)
   const activeCursor = useCanvasStore((state) => state.activeCursor)
   const blockCount = useBlocksStore((state) => Object.keys(state.blocks).length)
+  const hasFocusBlock = useBlocksStore((state) =>
+    Object.values(state.blocks).some((block) => block.type === "focus")
+  )
   const { theme, setTheme } = useTheme()
 
   const runTransformAnimation = useCallback(
@@ -141,6 +162,17 @@ export function Canvas() {
   const addBlockAtViewportCenter = useCallback((type: BlockType) => {
     const canvasState = useCanvasStore.getState()
     const blocksStore = useBlocksStore.getState()
+    const existingFocusId =
+      type === "focus" ? getExistingFocusBlockId(blocksStore.blocks) : null
+
+    if (existingFocusId) {
+      blocksStore.bringToFront(existingFocusId)
+      canvasState.select([existingFocusId])
+      setShowOnboarding(false)
+      markOnboardingSeen()
+      return
+    }
+
     const blocks = Object.values(blocksStore.blocks)
     const center = toCanvas(
       window.innerWidth / 2,
@@ -340,7 +372,12 @@ export function Canvas() {
       y: event.clientY,
       pointerId: event.pointerId,
     }
-    setSelectionRect({ x: event.clientX, y: event.clientY, width: 0, height: 0 })
+    setSelectionRect({
+      x: event.clientX,
+      y: event.clientY,
+      width: 0,
+      height: 0,
+    })
     event.currentTarget.setPointerCapture(event.pointerId)
   }
 
@@ -350,7 +387,9 @@ export function Canvas() {
       return
     }
 
-    setSelectionRect(normalizeScreenRect(start.x, start.y, event.clientX, event.clientY))
+    setSelectionRect(
+      normalizeScreenRect(start.x, start.y, event.clientX, event.clientY)
+    )
   }
 
   const finishSelection: PointerEventHandler<HTMLDivElement> = (event) => {
@@ -363,7 +402,12 @@ export function Canvas() {
       event.currentTarget.releasePointerCapture(event.pointerId)
     }
 
-    const rect = normalizeScreenRect(start.x, start.y, event.clientX, event.clientY)
+    const rect = normalizeScreenRect(
+      start.x,
+      start.y,
+      event.clientX,
+      event.clientY
+    )
     selectionStartRef.current = null
     setSelectionRect(null)
 
@@ -405,6 +449,7 @@ export function Canvas() {
           canvasState.setCursor("grab")
         }}
         onAddBlock={addBlockAtViewportCenter}
+        disableFocusAdd={hasFocusBlock}
         onToggleSettings={() => {
           setIsSettingsOpen((open) => !open)
         }}
@@ -412,27 +457,34 @@ export function Canvas() {
       />
       <TransformLayer transition={transition} />
       <SelectionRect rect={selectionRect} />
-      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetZoomToOne} />
+      <ZoomControls
+        zoom={zoom}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
+        onReset={resetZoomToOne}
+      />
       <Minimap />
-      <div className="fixed right-2 top-3 z-50 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-3 sm:right-4 sm:top-4 sm:w-72">
+      <div className="fixed top-3 right-2 z-50 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-3 sm:top-4 sm:right-4 sm:w-72">
         <aside
           className={cn(
-            "min-w-0 rounded-xl bg-card p-4 text-sm shadow-[0_10px_24px_rgba(0,0,0,0.16)] [overflow-wrap:anywhere]",
+            "min-w-0 rounded-xl bg-card p-4 text-sm [overflow-wrap:anywhere] shadow-[0_10px_24px_rgba(0,0,0,0.16)]",
             "canvas-side-panel",
             "origin-top-right transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]",
             isAiPanelOpen
-              ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
-              : "pointer-events-none opacity-0 -translate-y-1 scale-[0.98]"
+              ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
           )}
         >
           <p className="font-medium text-foreground">quick actions</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            press <span className="font-mono">t</span>, <span className="font-mono">n</span>, or <span className="font-mono">f</span> to add blocks fast.
+            press <span className="font-mono">t</span>,{" "}
+            <span className="font-mono">n</span>, or{" "}
+            <span className="font-mono">f</span> to add blocks fast.
           </p>
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <button
               type="button"
-              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs hover:border-primary/45 [overflow-wrap:anywhere]"
+              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs [overflow-wrap:anywhere] hover:border-primary/45"
               onClick={() => {
                 addBlockAtViewportCenter("tasks")
               }}
@@ -441,7 +493,7 @@ export function Canvas() {
             </button>
             <button
               type="button"
-              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs hover:border-primary/45 [overflow-wrap:anywhere]"
+              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs [overflow-wrap:anywhere] hover:border-primary/45"
               onClick={() => {
                 addBlockAtViewportCenter("notes")
               }}
@@ -450,16 +502,22 @@ export function Canvas() {
             </button>
             <button
               type="button"
-              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs hover:border-primary/45 [overflow-wrap:anywhere]"
+              disabled={hasFocusBlock}
+              className={cn(
+                "min-w-0 rounded-md border border-border px-2 py-1.5 text-left text-xs [overflow-wrap:anywhere]",
+                hasFocusBlock
+                  ? "cursor-not-allowed bg-secondary/45 text-muted-foreground/80"
+                  : "bg-secondary/70 hover:border-primary/45"
+              )}
               onClick={() => {
                 addBlockAtViewportCenter("focus")
               }}
             >
-              add focus
+              {hasFocusBlock ? "focus exists" : "add focus"}
             </button>
             <button
               type="button"
-              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs hover:border-primary/45 [overflow-wrap:anywhere]"
+              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs [overflow-wrap:anywhere] hover:border-primary/45"
               onClick={fitAllContent}
             >
               fit all blocks
@@ -468,12 +526,12 @@ export function Canvas() {
         </aside>
         <aside
           className={cn(
-            "min-w-0 rounded-xl bg-card p-4 text-sm shadow-[0_10px_24px_rgba(0,0,0,0.16)] [overflow-wrap:anywhere]",
+            "min-w-0 rounded-xl bg-card p-4 text-sm [overflow-wrap:anywhere] shadow-[0_10px_24px_rgba(0,0,0,0.16)]",
             "canvas-side-panel",
             "origin-top-right transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]",
             isSettingsOpen
-              ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
-              : "pointer-events-none opacity-0 -translate-y-1 scale-[0.98]"
+              ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
           )}
         >
           <p className="font-medium text-foreground">settings</p>
@@ -497,15 +555,20 @@ export function Canvas() {
             ))}
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            tips: <span className="font-mono">cmd/ctrl + shift + h</span> frames every block, <span className="font-mono">d</span> toggles theme.
+            tips: <span className="font-mono">cmd/ctrl + shift + h</span> frames
+            every block, <span className="font-mono">d</span> toggles theme.
           </p>
         </aside>
       </div>
       {showOnboarding && blockCount === 0 ? (
         <div className="pointer-events-none fixed inset-0 z-40 grid place-items-center px-6">
           <div className="pointer-events-auto max-w-md rounded-2xl border border-border/80 bg-card/95 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur">
-            <p className="text-xs tracking-[0.08em] text-muted-foreground">first canvas</p>
-            <h2 className="mt-2 font-display text-2xl text-foreground">start with a calm layout</h2>
+            <p className="text-xs tracking-[0.08em] text-muted-foreground">
+              first canvas
+            </p>
+            <h2 className="mt-2 font-display text-2xl text-foreground">
+              start with a calm layout
+            </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               place your first blocks, then drag headers to arrange your day.
             </p>
@@ -525,7 +588,7 @@ export function Canvas() {
                   setShowOnboarding(false)
                   markOnboardingSeen()
                 }}
-                >
+              >
                 add one tasks block
               </button>
               <button
