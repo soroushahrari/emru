@@ -28,6 +28,7 @@ type FeatureSectionProps = {
   children: ReactNode
   reverse?: boolean
   id?: string
+  className?: string
   reducedMotion: boolean
 }
 
@@ -41,39 +42,39 @@ type RevealProps = {
 type FeatureCard = {
   title: string
   description: string
-  icon: "layout" | "spark" | "square" | "lines" | "upload" | "home"
+  proof: string
 }
 
 const FEATURE_CARDS: FeatureCard[] = [
   {
     title: "blocks with structure",
     description: "Move, resize, and group cards without fighting rigid layouts.",
-    icon: "layout",
+    proof: "Drag headers, resize corners, and keep spatial memory intact.",
   },
   {
     title: "focus that stays gentle",
     description: "Work and break cycles that support flow without pressure loops.",
-    icon: "spark",
+    proof: "A visible timer and simple progression avoid urgency theater.",
   },
   {
     title: "local-first by default",
     description: "Your data stays on device with no hidden sync assumptions.",
-    icon: "square",
+    proof: "Blocks and settings persist in browser storage, not remote APIs.",
   },
   {
     title: "short-horizon planning",
     description: "Keep today visible while tomorrow waits quietly in the wings.",
-    icon: "lines",
+    proof: "The canvas is tuned for now: capture, arrange, and act.",
   },
   {
     title: "export when you want",
     description: "Leave with your data in a clean JSON backup at any time.",
-    icon: "upload",
+    proof: "No lock-in mechanics or hidden account dependencies.",
   },
   {
     title: "quiet, polished motion",
     description: "Subtle movement supports attention instead of stealing it.",
-    icon: "home",
+    proof: "Reduced motion support is first-class across core interactions.",
   },
 ]
 
@@ -120,85 +121,6 @@ function ArrowIcon() {
       />
     </svg>
   )
-}
-
-function GridIcon({ icon }: { icon: FeatureCard["icon"] }) {
-  switch (icon) {
-    case "layout":
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M3.5 8.5h7v-5h-7v5Zm10 0h7v-5h-7v5Zm-10 12h7v-9h-7v9Zm10 0h7v-9h-7v9Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )
-    case "spark":
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M12 2.5v5m0 9v5m9.5-9h-5m-9 0h-5M19.4 5.6l-3.5 3.5M8.1 16.9l-3.5 3.5m0-14.8 3.5 3.5m7.8 7.8 3.5 3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-        </svg>
-      )
-    case "square":
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M4 4h16v16H4z M8 8h8v8H8z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )
-    case "lines":
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M5 6h14M5 12h14M5 18h9"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-        </svg>
-      )
-    case "upload":
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M12 5v14m-5-9 5-5 5 5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )
-    default:
-      return (
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-          <path
-            d="M5 19V8l7-4 7 4v11M9 12h6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )
-  }
 }
 
 function IconShell({ children }: { children: ReactNode }) {
@@ -268,13 +190,14 @@ function FeatureSection({
   children,
   reverse,
   id,
+  className,
   reducedMotion,
 }: FeatureSectionProps) {
   return (
-    <section id={id} className={`feature-section ${reverse ? "is-reverse" : ""}`}>
+    <section id={id} className={`feature-section ${reverse ? "is-reverse" : ""} ${className ?? ""}`}>
       <Reveal reducedMotion={reducedMotion} delay={80} className="feature-copy">
         <span className="section-pill mb-4 inline-flex">{pill}</span>
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="font-display text-3xl tracking-tight text-foreground sm:text-4xl">
           {title}
         </h2>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -380,14 +303,18 @@ export function App() {
 
   const isHeroVisible = prefersReducedMotion || hasHeroEntered
   const heroItemClass = `hero-item ${isHeroVisible ? "is-visible" : ""}`
+  const navBrandClass = isNavRaised ? "text-foreground" : "text-[var(--paper-950)]"
+  const navLinkClass = isNavRaised
+    ? "text-foreground/78 hover:text-foreground"
+    : "text-white/80 hover:text-white"
 
   return (
     <div className="min-h-svh overflow-x-hidden bg-background text-foreground">
       <nav
         className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
           isNavRaised
-            ? "border-white/15 bg-black/45 shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
-            : "border-white/10 bg-black/30"
+            ? "border-border/70 bg-background/84 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+            : "border-white/10 bg-black/22"
         }`}
       >
         <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-6">
@@ -400,118 +327,110 @@ export function App() {
             <span className="brand-mark-wrap">
               <EmruMark size={24} />
             </span>
-            <span className="font-serif text-[1.7rem] leading-none text-[var(--paper-950)]">
+            <span className={`font-display text-[1.7rem] leading-none ${navBrandClass}`}>
               emru
             </span>
           </a>
-          <a
-            href="/app"
-            className="pressable group inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm text-white/90 hover:border-white/35 hover:bg-white/5"
-          >
-            open workspace
-            <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
-              <ArrowIcon />
-            </span>
-          </a>
+          <div className="flex items-center gap-4 text-sm">
+            <a href="#workspace" className={navLinkClass}>
+              how it works
+            </a>
+            <a href="/app" className={navLinkClass}>
+              open workspace
+            </a>
+          </div>
         </div>
       </nav>
 
       <section
         id="top"
-        className="hero-gradient dot-grid-light relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-16"
+        className="hero-gradient dot-grid-light relative min-h-screen overflow-hidden px-6 pb-18 pt-28"
       >
         <div className="hero-glow absolute inset-0" />
         {showSecretBloom ? <div className="secret-bloom absolute inset-0" /> : null}
 
-        <div
-          className={`${heroItemClass} absolute left-[8%] top-[22%] hidden w-64 rounded-2xl border border-[var(--ink-200)]/40 bg-[var(--paper-950)]/95 p-5 text-[var(--ink-900)] shadow-2xl lg:block`}
-          style={delayStyle("--hero-delay", 1, HERO_ENTER_STEP_MS)}
-        >
-          <div className="font-serif text-2xl">tasks</div>
-          <ul className="mt-4 space-y-2 text-lg">
-            <li className="opacity-45 line-through">ship landing page</li>
-            <li>review PR #42</li>
-            <li>call with team</li>
-          </ul>
-        </div>
+        <div className="hero-content-grid relative z-10 mx-auto grid w-full max-w-5xl gap-12 xl:gap-16 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+          <div className="text-left">
+            <div className={heroItemClass} style={delayStyle("--hero-delay", 1, HERO_ENTER_STEP_MS)}>
+              <EmruMark size={58} />
+            </div>
+            <h1
+              className={`${heroItemClass} mt-8 max-w-[11ch] font-display text-[clamp(2.5rem,6vw,5.4rem)] leading-[0.95] tracking-tight text-[var(--paper-950)]`}
+              style={delayStyle("--hero-delay", 2, HERO_ENTER_STEP_MS)}
+            >
+              your day, clearly arranged.
+            </h1>
+            <p
+              className={`${heroItemClass} mt-6 max-w-xl text-lg leading-relaxed text-[color:rgb(228_223_209_/_0.76)] sm:text-[1.35rem]`}
+              style={delayStyle("--hero-delay", 3, HERO_ENTER_STEP_MS)}
+            >
+              tasks, notes, and focus in one calm canvas. local-first from the
+              start, with no account, no feed, and no pressure loops.
+            </p>
+            <p
+              className={`${heroItemClass} hero-greeting mt-5 inline-flex`}
+              style={delayStyle("--hero-delay", 3.5, HERO_ENTER_STEP_MS)}
+            >
+              {greeting}
+            </p>
+            <div
+              className={`${heroItemClass} mt-9 flex flex-wrap items-center gap-4`}
+              style={delayStyle("--hero-delay", 4, HERO_ENTER_STEP_MS)}
+            >
+              <a
+                href="/app"
+                className="cta-shadow cta-delight pressable group inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-8 py-3.5 text-base font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]"
+              >
+                open workspace
+                <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
+                  <ArrowIcon />
+                </span>
+              </a>
+              <a href="#workspace" className="text-sm text-[var(--paper-950)]/72 hover:text-[var(--paper-950)]">
+                see the canvas workflow
+              </a>
+            </div>
+            <p
+              className={`${heroItemClass} mt-5 text-sm text-[color:rgb(228_223_209_/_0.46)]`}
+              style={delayStyle("--hero-delay", 5, HERO_ENTER_STEP_MS)}
+            >
+              no signup. everything stays in your browser.
+            </p>
+          </div>
 
-        <div
-          className={`${heroItemClass} absolute left-[10%] top-[65%] hidden w-56 rounded-2xl border border-[var(--ink-200)]/40 bg-[var(--paper-950)]/95 p-5 text-[var(--ink-900)] shadow-2xl lg:block`}
-          style={delayStyle("--hero-delay", 2, HERO_ENTER_STEP_MS)}
-        >
-          <div className="font-serif text-2xl">notes</div>
-          <p className="mt-3 text-base text-[var(--ink-600)]">
-            launch checklist, polish copy, test mobile, deploy to prod.
-          </p>
-        </div>
-
-        <div
-          className={`${heroItemClass} absolute right-[7%] top-[30%] hidden w-52 rounded-2xl border border-[var(--ink-200)]/40 bg-[var(--paper-950)]/95 p-5 text-[var(--ink-900)] shadow-2xl lg:block float-card-slow`}
-          style={delayStyle("--hero-delay", 2, HERO_ENTER_STEP_MS)}
-        >
-          <div className="font-serif text-2xl">focus</div>
-          <div className="mt-4 flex justify-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[var(--ember)]/80 font-mono text-xl">
-              16:20
+          <div
+            className={`${heroItemClass} hero-preview-surface relative hidden min-h-[23rem] overflow-hidden p-5 lg:block`}
+            style={delayStyle("--hero-delay", 3, HERO_ENTER_STEP_MS)}
+          >
+            <div className="text-xs tracking-[0.08em] text-muted-foreground">today board</div>
+            <div className="mt-4 grid gap-0 border-y border-border/65">
+              <div className="grid gap-2 py-3">
+                <div className="font-display text-lg text-foreground">tasks</div>
+                <div className="space-y-1.5 text-sm text-foreground/88">
+                  <div className="opacity-45 line-through">draft project brief</div>
+                  <div>review shared notes</div>
+                  <div>ship one calm improvement</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-[1fr_auto] gap-4 border-t border-border/60 py-3">
+                <div>
+                  <div className="font-display text-lg text-foreground">notes</div>
+                  <div className="mt-2 space-y-1.5">
+                    <div className="h-2 rounded-full bg-foreground/12" />
+                    <div className="h-2 w-4/5 rounded-full bg-foreground/12" />
+                    <div className="h-2 w-2/3 rounded-full bg-foreground/12" />
+                  </div>
+                </div>
+                <div className="flex min-h-[4.5rem] w-[5.5rem] items-center justify-center rounded-full border border-border/75 bg-secondary/58 px-3 font-mono text-base text-foreground">
+                  23:10
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
-          className={`${heroItemClass} absolute right-[9%] top-[66%] hidden w-64 rounded-2xl border border-[var(--ink-200)]/40 bg-[var(--paper-950)]/95 p-5 text-[var(--ink-900)] shadow-2xl xl:block`}
-          style={delayStyle("--hero-delay", 3, HERO_ENTER_STEP_MS)}
-        >
-          <div className="font-serif text-2xl">tasks</div>
-          <ul className="mt-4 space-y-2 text-lg">
-            <li className="opacity-45 line-through">ship landing page</li>
-            <li>review PR #42</li>
-            <li>call with team</li>
-          </ul>
-        </div>
-
-        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
-          <div className={heroItemClass} style={delayStyle("--hero-delay", 1, HERO_ENTER_STEP_MS)}>
-            <EmruMark size={64} />
-          </div>
-          <h1
-            className={`${heroItemClass} mt-10 font-serif text-[clamp(2.7rem,6vw,6rem)] leading-[0.95] tracking-tight text-[var(--paper-950)]`}
-            style={delayStyle("--hero-delay", 2, HERO_ENTER_STEP_MS)}
-          >
-            today, clear.
-          </h1>
-          <p
-            className={`${heroItemClass} mt-7 max-w-2xl text-lg leading-relaxed text-[color:rgb(228_223_209_/_0.72)] sm:text-2xl`}
-            style={delayStyle("--hero-delay", 3, HERO_ENTER_STEP_MS)}
-          >
-            a calm daily workspace. tasks, notes, and a focus timer - all on a
-            free-form canvas. local-first. no account needed.
-          </p>
-          <p
-            className={`${heroItemClass} hero-greeting mt-5`}
-            style={delayStyle("--hero-delay", 3.5, HERO_ENTER_STEP_MS)}
-          >
-            {greeting}
-          </p>
-          <a
-            href="/app"
-            className={`${heroItemClass} cta-shadow cta-delight pressable group mt-12 inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-9 py-4 text-lg font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]`}
-            style={delayStyle("--hero-delay", 4, HERO_ENTER_STEP_MS)}
-          >
-            open workspace
-            <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5">
-              <ArrowIcon />
-            </span>
-          </a>
-          <p
-            className={`${heroItemClass} mt-5 text-sm text-[color:rgb(228_223_209_/_0.42)]`}
-            style={delayStyle("--hero-delay", 5, HERO_ENTER_STEP_MS)}
-          >
-            no signup - your data stays in your browser
-          </p>
-        </div>
-
         <a
-          href="/app"
+          href="#workspace"
           aria-label="Scroll to workspace details"
           className={`${heroItemClass} scroll-cue absolute bottom-7 left-1/2 z-20 -translate-x-1/2`}
           style={delayStyle("--hero-delay", 7, HERO_ENTER_STEP_MS)}
@@ -526,13 +445,14 @@ export function App() {
         <FeatureSection
           id="workspace"
           reducedMotion={prefersReducedMotion}
+          className="feature-workspace"
           pill="canvas"
           title="your day, arranged your way"
           description="an infinite canvas with a dot grid. drag blocks anywhere, resize them, and let your spatial memory shape your workflow."
         >
           <div className="dot-grid-light rounded-panel relative aspect-[4/3] w-full max-w-xl overflow-hidden border border-border/60 bg-card p-7 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
             <div className="floating-card absolute left-5 top-5 w-40 p-3">
-              <div className="font-serif text-lg">tasks</div>
+              <div className="font-display text-lg">tasks</div>
               <div className="mt-2 space-y-2 text-sm text-muted-foreground">
                 <div className="h-2 rounded-full bg-foreground/10" />
                 <div className="h-2 w-5/6 rounded-full bg-foreground/10" />
@@ -540,13 +460,13 @@ export function App() {
               </div>
             </div>
             <div className="floating-card absolute bottom-7 right-7 w-30 p-3 text-center">
-              <div className="font-serif text-lg">focus</div>
+              <div className="font-display text-lg">focus</div>
               <div className="mx-auto mt-2 flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/40 font-mono text-xs">
                 25:00
               </div>
             </div>
             <div className="floating-card absolute right-[28%] top-[44%] w-36 p-3">
-              <div className="font-serif text-lg">notes</div>
+              <div className="font-display text-lg">notes</div>
               <div className="mt-2 space-y-1.5">
                 <div className="h-2 rounded-full bg-foreground/9" />
                 <div className="h-2 w-4/5 rounded-full bg-foreground/9" />
@@ -558,6 +478,7 @@ export function App() {
 
         <FeatureSection
           reducedMotion={prefersReducedMotion}
+          className="feature-focus"
           pill="focus"
           title="stay in the zone"
           description="a timer that tracks sessions, respects your pace, and nudges you gently when breaks begin. no noise, no pressure, just clear momentum."
@@ -567,7 +488,7 @@ export function App() {
             <div className="timer-ring">
               <div className="timer-inner">
                 <span className="font-mono text-3xl tabular-nums">17:30</span>
-                <span className="mt-0.5 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                <span className="mt-0.5 text-xs tracking-[0.1em] text-muted-foreground">
                   focus
                 </span>
               </div>
@@ -583,6 +504,7 @@ export function App() {
 
         <FeatureSection
           reducedMotion={prefersReducedMotion}
+          className="feature-privacy"
           pill="privacy"
           title="your data never leaves your device"
           description="no account, no trackers, no remote database. your blocks are stored locally and can be exported whenever you want."
@@ -651,8 +573,8 @@ export function App() {
           <div className="feature-list-intro">
             <Reveal reducedMotion={prefersReducedMotion} className="max-w-2xl">
               <span className="section-pill mb-4 inline-flex">features</span>
-              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                everything you need, nothing you don&apos;t
+              <h2 className="font-display text-3xl tracking-tight sm:text-4xl">
+                practical by default, thoughtful in the details
               </h2>
             </Reveal>
             <Reveal
@@ -660,35 +582,38 @@ export function App() {
               delay={70}
               className="max-w-sm text-sm leading-relaxed text-muted-foreground"
             >
-              Emru keeps the canvas lightweight: the core tools are immediate,
-              and supporting details stay out of your way until you need them.
+              The core loop is simple: capture what matters, arrange it in
+              space, and move through your day with less friction.
             </Reveal>
           </div>
-          <div className="feature-grid">
-            {FEATURE_CARDS.map((feature, index) => (
-              <Reveal
-                key={feature.title}
-                reducedMotion={prefersReducedMotion}
-                delay={index * 90}
-                className={
-                  index === 0
-                    ? "sm:col-span-2 lg:col-span-2"
-                    : index === 3
-                      ? "lg:col-span-2"
-                      : ""
-                }
-              >
-                <article className="floating-card feature-card min-h-36 p-5">
-                  <IconShell>
-                    <GridIcon icon={feature.icon} />
-                  </IconShell>
-                  <h3 className="mt-4 text-lg font-medium">{feature.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {feature.description}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
+          <div className="feature-points-grid">
+            <Reveal reducedMotion={prefersReducedMotion} delay={60} className="feature-points-list">
+              <div className="divide-y divide-border/65 border-y border-border/65">
+                {FEATURE_CARDS.map((feature, index) => (
+                  <article key={feature.title} className="feature-point px-3 py-4 sm:px-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="font-display text-xl text-foreground">{feature.title}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{feature.description}</p>
+                      </div>
+                      <span className="mt-0.5 text-xs text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-foreground/75">{feature.proof}</p>
+                  </article>
+                ))}
+              </div>
+            </Reveal>
+            <Reveal reducedMotion={prefersReducedMotion} delay={120} className="feature-rhythm-note">
+              <aside className="h-full border-l border-border/70 pl-5">
+                <p className="section-pill inline-flex">workflow cue</p>
+                <h3 className="mt-4 font-display text-2xl text-foreground">one canvas, three rhythms</h3>
+                <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
+                  <li>1. Capture a quick task or note the moment it appears.</li>
+                  <li>2. Arrange blocks spatially so your next action is obvious.</li>
+                  <li>3. Run a focus session and close the day without residue.</li>
+                </ol>
+              </aside>
+            </Reveal>
           </div>
         </section>
       </main>
@@ -702,11 +627,11 @@ export function App() {
           <div>
             <EmruMark size={50} />
           </div>
-          <h2 className="mt-6 font-serif text-4xl text-[var(--paper-950)] sm:text-5xl">
-            experience emru today
+          <h2 className="mt-6 font-display text-4xl text-[var(--paper-950)] sm:text-5xl">
+            start your day in one place
           </h2>
           <p className="mt-3 max-w-sm text-base text-[color:rgb(228_223_209_/_0.72)]">
-            your entire day, in one calm canvas.
+            keep it light, private, and clear from the first block.
           </p>
           <a
             href="/app"
@@ -730,10 +655,10 @@ export function App() {
             <span className="brand-mark-wrap">
               <EmruMark size={20} />
             </span>
-            <span className="font-serif text-lg">emru</span>
+            <span className="font-display text-lg">emru</span>
           </a>
           <p className="text-sm text-muted-foreground">
-            your day, your canvas - built for today
+            your day, your canvas - built for now
           </p>
         </footer>
       </Reveal>
