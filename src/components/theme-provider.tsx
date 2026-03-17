@@ -77,6 +77,27 @@ function isEditableTarget(target: EventTarget | null) {
   return false
 }
 
+function readStoredTheme(storageKey: string) {
+  try {
+    const storedTheme = localStorage.getItem(storageKey)
+    if (isTheme(storedTheme)) {
+      return storedTheme
+    }
+  } catch {
+    // ignore storage read failures
+  }
+
+  return null
+}
+
+function writeStoredTheme(storageKey: string, theme: Theme) {
+  try {
+    localStorage.setItem(storageKey, theme)
+  } catch {
+    // ignore storage write failures
+  }
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -85,8 +106,8 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setThemeState] = React.useState<Theme>(() => {
-    const storedTheme = localStorage.getItem(storageKey)
-    if (isTheme(storedTheme)) {
+    const storedTheme = readStoredTheme(storageKey)
+    if (storedTheme) {
       return storedTheme
     }
 
@@ -95,7 +116,7 @@ export function ThemeProvider({
 
   const setTheme = React.useCallback(
     (nextTheme: Theme) => {
-      localStorage.setItem(storageKey, nextTheme)
+      writeStoredTheme(storageKey, nextTheme)
       setThemeState(nextTheme)
     },
     [storageKey]
@@ -167,7 +188,7 @@ export function ThemeProvider({
                 ? "light"
                 : "dark"
 
-        localStorage.setItem(storageKey, nextTheme)
+        writeStoredTheme(storageKey, nextTheme)
         return nextTheme
       })
     }

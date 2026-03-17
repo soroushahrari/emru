@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="emru favicon">
+  <rect width="64" height="64" rx="16" fill="#1a1614" />
+  <path
+    d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19"
+    fill="none"
+    stroke="#e09060"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13"
+    fill="none"
+    stroke="#f7c68a"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5"
+    fill="none"
+    stroke="#ffd77a"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+</svg>
