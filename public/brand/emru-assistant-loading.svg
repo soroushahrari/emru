@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="emru assistant loading">
+  <style>
+    .track {
+      fill: none;
+      stroke: #8b7d6f;
+      stroke-linecap: round;
+      stroke-width: 4;
+      opacity: 0.22;
+    }
+
+    .arc {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 4;
+      stroke-dasharray: 24 140;
+      transform-origin: 32px 32px;
+    }
+
+    .orbit {
+      transform-origin: 32px 32px;
+      animation: emru-load-spin 2.2s linear infinite;
+    }
+
+    .arc-outer {
+      stroke: #d4692a;
+      animation: emru-load-dash-outer 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .arc-mid {
+      stroke: #e09060;
+      animation: emru-load-dash-mid 1.55s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .arc-inner {
+      stroke: #ffd77a;
+      animation: emru-load-dash-inner 1.25s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .core {
+      fill: #f7c68a;
+      animation: emru-load-core 1.8s ease-in-out infinite;
+    }
+
+    @keyframes emru-load-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes emru-load-dash-outer {
+      0% {
+        stroke-dashoffset: 0;
+        opacity: 0.86;
+      }
+      100% {
+        stroke-dashoffset: -170;
+        opacity: 1;
+      }
+    }
+
+    @keyframes emru-load-dash-mid {
+      0% {
+        stroke-dashoffset: 8;
+        opacity: 0.82;
+      }
+      100% {
+        stroke-dashoffset: -150;
+        opacity: 1;
+      }
+    }
+
+    @keyframes emru-load-dash-inner {
+      0% {
+        stroke-dashoffset: 18;
+        opacity: 0.8;
+      }
+      100% {
+        stroke-dashoffset: -130;
+        opacity: 1;
+      }
+    }
+
+    @keyframes emru-load-core {
+      0%,
+      100% {
+        opacity: 0.44;
+        transform: scale(0.78);
+        transform-origin: 32px 32px;
+      }
+      50% {
+        opacity: 0.96;
+        transform: scale(1);
+        transform-origin: 32px 32px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .orbit,
+      .arc,
+      .core {
+        animation: none;
+      }
+    }
+  </style>
+  <g class="orbit">
+    <path class="track" d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19" />
+    <path class="track" d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13" />
+    <path class="track" d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5" />
+    <path class="arc arc-outer" d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19" />
+    <path class="arc arc-mid" d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13" />
+    <path class="arc arc-inner" d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5" />
+  </g>
+  <circle class="core" cx="32" cy="32" r="2.7" />
+</svg>

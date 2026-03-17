@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="emru assistant thinking">
+  <style>
+    .arc {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 4;
+      opacity: 0.94;
+    }
+
+    .arc-outer {
+      stroke: #d4692a;
+      animation: emru-think-breathe 2.6s ease-in-out infinite;
+    }
+
+    .arc-mid {
+      stroke: #e09060;
+      animation: emru-think-breathe 2.6s ease-in-out infinite 130ms;
+    }
+
+    .arc-inner {
+      stroke: #ffd77a;
+      animation: emru-think-breathe 2.6s ease-in-out infinite 240ms;
+    }
+
+    .focus-ring {
+      fill: none;
+      stroke: #f7c68a;
+      stroke-width: 1.8;
+      stroke-dasharray: 8 8;
+      opacity: 0.35;
+      transform-origin: 32px 32px;
+      animation: emru-think-rotate 4.8s linear infinite;
+    }
+
+    .dot {
+      fill: #f7c68a;
+      opacity: 0.24;
+      transform-origin: center;
+      animation: emru-think-dot 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    .dot-2 {
+      animation-delay: 0.16s;
+    }
+
+    .dot-3 {
+      animation-delay: 0.32s;
+    }
+
+    @keyframes emru-think-breathe {
+      0%,
+      100% {
+        opacity: 0.72;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes emru-think-rotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes emru-think-dot {
+      0%,
+      100% {
+        opacity: 0.24;
+        transform: translateY(0);
+      }
+      45% {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .arc,
+      .focus-ring,
+      .dot {
+        animation: none;
+      }
+    }
+  </style>
+  <path class="arc arc-outer" d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19" />
+  <path class="arc arc-mid" d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13" />
+  <path class="arc arc-inner" d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5" />
+  <circle class="focus-ring" cx="32" cy="32" r="18" />
+  <circle class="dot" cx="25" cy="49" r="2.3" />
+  <circle class="dot dot-2" cx="32" cy="49" r="2.3" />
+  <circle class="dot dot-3" cx="39" cy="49" r="2.3" />
+</svg>

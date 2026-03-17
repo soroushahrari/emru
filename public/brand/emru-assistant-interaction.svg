@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="emru assistant interaction">
+  <style>
+    .arc {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 4;
+      transform-origin: 32px 32px;
+      animation: emru-interact-arc 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .arc-outer {
+      stroke: #d4692a;
+    }
+
+    .arc-mid {
+      stroke: #e09060;
+      animation-delay: 120ms;
+    }
+
+    .arc-inner {
+      stroke: #ffd77a;
+      animation-delay: 210ms;
+    }
+
+    .ripple {
+      fill: none;
+      stroke: #f7c68a;
+      stroke-width: 2;
+      opacity: 0;
+      transform-origin: 32px 32px;
+      animation: emru-interact-ripple 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    .ripple-b {
+      animation-delay: 0.8s;
+    }
+
+    .node {
+      fill: #ffd77a;
+      transform-origin: 32px 32px;
+      animation: emru-interact-node 2.4s ease-in-out infinite;
+    }
+
+    .spark {
+      fill: none;
+      stroke: #e09060;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      opacity: 0;
+      animation: emru-interact-spark 2.4s ease-out infinite;
+    }
+
+    @keyframes emru-interact-arc {
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+      35% {
+        transform: translateY(-0.8px) scale(1.02);
+      }
+      70% {
+        transform: translateY(0) scale(0.995);
+      }
+    }
+
+    @keyframes emru-interact-ripple {
+      0% {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+      28% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.35);
+      }
+    }
+
+    @keyframes emru-interact-node {
+      0%,
+      100% {
+        opacity: 0.85;
+        transform: scale(0.92);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes emru-interact-spark {
+      0%,
+      100% {
+        opacity: 0;
+      }
+      18% {
+        opacity: 0;
+      }
+      32% {
+        opacity: 1;
+      }
+      52% {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .arc,
+      .ripple,
+      .node,
+      .spark {
+        animation: none;
+      }
+
+      .ripple,
+      .spark {
+        opacity: 0;
+      }
+    }
+  </style>
+  <path class="arc arc-outer" d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19" />
+  <path class="arc arc-mid" d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13" />
+  <path class="arc arc-inner" d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5" />
+  <circle class="ripple" cx="32" cy="32" r="8" />
+  <circle class="ripple ripple-b" cx="32" cy="32" r="8" />
+  <circle class="node" cx="32" cy="32" r="2.8" />
+  <path class="spark" d="M24.2 22.3h2.6m13.1 0h2.6M32 18.6v2.6M32 42.8v2.6" />
+</svg>

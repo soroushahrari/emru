@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="emru favicon">
+  <defs>
+    <linearGradient id="fav-outer" x1="14" y1="54" x2="50" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d4692a" />
+      <stop offset="1" stop-color="#e09060" />
+    </linearGradient>
+    <linearGradient id="fav-mid" x1="20" y1="45" x2="44" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e09060" />
+      <stop offset="1" stop-color="#f7c68a" />
+    </linearGradient>
+    <linearGradient id="fav-inner" x1="28" y1="38" x2="37" y2="31" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7c68a" />
+      <stop offset="1" stop-color="#ffd77a" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(32 32) scale(1.35) translate(-32 -34)">
+    <path d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19" fill="none" stroke="url(#fav-outer)" stroke-width="4.8" stroke-linecap="round" />
+    <path d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13" fill="none" stroke="url(#fav-mid)" stroke-width="4.8" stroke-linecap="round" />
+    <path d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5" fill="none" stroke="url(#fav-inner)" stroke-width="4.8" stroke-linecap="round" />
+  </g>
+</svg>

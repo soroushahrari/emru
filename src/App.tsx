@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react"
 
+import { EmruMark } from "@/components/brand/EmruMark"
+
 const HERO_ENTER_STEP_MS = 110
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 const PRIVACY_PROMISE =
@@ -103,40 +105,6 @@ function delayStyle(
   return {
     [key]: `${Math.round(stepOrDelay * stepSize)}ms`,
   } as CSSProperties
-}
-
-function EmruMark({ size = 34 }: { size?: number }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 64 64"
-      width={size}
-      height={size}
-      className="drop-shadow-[0_2px_10px_rgba(224,144,96,0.4)]"
-    >
-      <path
-        d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19"
-        fill="none"
-        stroke="var(--ember)"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13"
-        fill="none"
-        stroke="var(--dawn)"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5"
-        fill="none"
-        stroke="var(--saffron)"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
 }
 
 function ArrowIcon() {
@@ -437,7 +405,7 @@ export function App() {
             </span>
           </a>
           <a
-            href="#workspace"
+            href="/app"
             className="pressable group inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm text-white/90 hover:border-white/35 hover:bg-white/5"
           >
             open workspace
@@ -525,7 +493,7 @@ export function App() {
             {greeting}
           </p>
           <a
-            href="#workspace"
+            href="/app"
             className={`${heroItemClass} cta-shadow cta-delight pressable group mt-12 inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-9 py-4 text-lg font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]`}
             style={delayStyle("--hero-delay", 4, HERO_ENTER_STEP_MS)}
           >
@@ -543,7 +511,7 @@ export function App() {
         </div>
 
         <a
-          href="#workspace"
+          href="/app"
           aria-label="Scroll to workspace details"
           className={`${heroItemClass} scroll-cue absolute bottom-7 left-1/2 z-20 -translate-x-1/2`}
           style={delayStyle("--hero-delay", 7, HERO_ENTER_STEP_MS)}
@@ -741,7 +709,7 @@ export function App() {
             your entire day, in one calm canvas.
           </p>
           <a
-            href="#workspace"
+            href="/app"
             className="cta-shadow cta-delight pressable group mt-8 inline-flex items-center gap-2.5 rounded-full bg-[var(--paper-950)] px-9 py-4 text-lg font-medium text-[var(--ink-900)] hover:bg-[var(--paper-900)]"
           >
             open workspace

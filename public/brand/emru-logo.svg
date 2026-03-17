@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 64" role="img" aria-label="emru logo">
+  <style>
+    .wordmark {
+      fill: #1f1913;
+      font-family: "Inter Variable", Inter, "Avenir Next", "Segoe UI", sans-serif;
+      font-size: 33px;
+      font-weight: 560;
+      letter-spacing: -0.04em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .wordmark {
+        fill: #f0ede7;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="emru-logo-outer" x1="14" y1="54" x2="50" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d4692a" />
+      <stop offset="1" stop-color="#e09060" />
+    </linearGradient>
+    <linearGradient id="emru-logo-mid" x1="20" y1="45" x2="44" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e09060" />
+      <stop offset="1" stop-color="#f7c68a" />
+    </linearGradient>
+    <linearGradient id="emru-logo-inner" x1="28" y1="38" x2="37" y2="31" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7c68a" />
+      <stop offset="1" stop-color="#ffd77a" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M14 42c2 7 9 12 17 12 10 0 19-8 19-19"
+    fill="none"
+    stroke="url(#emru-logo-outer)"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M20 38c2 4 6 7 11 7 7 0 13-6 13-13"
+    fill="none"
+    stroke="url(#emru-logo-mid)"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M28 34c1 2 2 3 4 3 3 0 5-2 5-5"
+    fill="none"
+    stroke="url(#emru-logo-inner)"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <text class="wordmark" x="78" y="41">emru</text>
+</svg>
