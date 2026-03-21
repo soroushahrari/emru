@@ -655,26 +655,45 @@
   }
 
   .resize-grip {
-    border-radius: 0.45rem;
-    background:
-      linear-gradient(
-        135deg,
-        transparent 45%,
-        color-mix(in oklab, var(--muted-foreground) 45%, transparent) 46% 54%,
-        transparent 55%
-      ),
-      linear-gradient(
-        135deg,
-        transparent 62%,
-        color-mix(in oklab, var(--muted-foreground) 45%, transparent) 63% 71%,
-        transparent 72%
-      );
-    opacity: 0.68;
-    transition: opacity 180ms var(--ease-out-quart);
+    display: grid;
+    place-items: end;
+    opacity: 0;
+    transition:
+      opacity 180ms var(--ease-out-quart),
+      transform 180ms var(--ease-out-quart);
+    transform: scale(0.9);
   }
 
-  .resize-grip:hover {
+  .resize-grip::before {
+    content: "";
+    width: 0.34rem;
+    height: 0.34rem;
+    margin-right: 0.28rem;
+    margin-bottom: 0.28rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--foreground) 48%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--card) 78%, transparent),
+      0 0 0 5px color-mix(in oklab, var(--primary) 0%, transparent);
+    transition:
+      background-color 180ms var(--ease-out-quart),
+      box-shadow 180ms var(--ease-out-quart),
+      transform 180ms var(--ease-out-quart);
+  }
+
+  .canvas-block-shell:hover .resize-grip,
+  .canvas-block-shell:focus-within .resize-grip,
+  .resize-grip[data-visible="true"] {
     opacity: 1;
+    transform: scale(1);
+  }
+
+  .resize-grip:hover::before {
+    background: color-mix(in oklab, var(--foreground) 64%, var(--primary));
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--card) 78%, transparent),
+      0 0 0 5px color-mix(in oklab, var(--primary) 12%, transparent);
+    transform: scale(1.08);
   }
 
   .focus-surface-compact {
@@ -750,19 +769,23 @@
 
   .focus-control-button {
     transition:
-      transform 180ms var(--ease-out-quart),
       background-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart),
       border-color 180ms var(--ease-out-quart),
       box-shadow 180ms var(--ease-out-quart);
   }
 
-  .focus-control-button:hover {
-    transform: translateY(-1px);
+  .canvas-block-inset {
+    border-radius: var(--radius-lg);
+    background: color-mix(in oklab, var(--secondary) 50%, transparent);
+    transition:
+      background-color 180ms var(--ease-out-quart),
+      box-shadow 180ms var(--ease-out-quart);
   }
 
-  .focus-view-switch {
-    border: 1px solid color-mix(in oklab, var(--primary) 30%, var(--border));
-    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--paper-950) 12%, transparent);
+  .canvas-block-inset:focus-within {
+    background: color-mix(in oklab, var(--secondary) 62%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 10%, transparent);
   }
 
   .focus-control-button-secondary {
@@ -772,20 +795,8 @@
   }
 
   .focus-control-button-secondary:hover {
-    background: color-mix(in oklab, var(--secondary) 36%, transparent);
+    background: color-mix(in oklab, var(--secondary) 34%, transparent);
     color: color-mix(in oklab, var(--foreground) 78%, transparent);
-  }
-
-  .focus-control-button-primary {
-    box-shadow:
-      inset 0 1px 0 color-mix(in oklab, var(--paper-950) 20%, transparent),
-      0 8px 18px color-mix(in oklab, var(--primary) 10%, transparent);
-  }
-
-  .focus-control-button-primary:hover {
-    box-shadow:
-      inset 0 1px 0 color-mix(in oklab, var(--paper-950) 24%, transparent),
-      0 10px 22px color-mix(in oklab, var(--primary) 14%, transparent);
   }
 
   .focus-session-indicator {
@@ -808,18 +819,11 @@
   }
 
   .focus-session-control {
-    border: 1px solid color-mix(in oklab, var(--border) 52%, transparent);
-    background: color-mix(in oklab, var(--secondary) 22%, transparent);
-    transition:
-      border-color 180ms var(--ease-out-quart),
-      background-color 180ms var(--ease-out-quart),
-      box-shadow 180ms var(--ease-out-quart);
+    min-width: 0;
   }
 
   .focus-session-control:focus-within {
-    border-color: color-mix(in oklab, var(--primary) 36%, var(--border));
-    background-color: color-mix(in oklab, var(--secondary) 54%, var(--card));
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 10%, transparent);
+    background-color: color-mix(in oklab, var(--secondary) 62%, transparent);
   }
 
   .focus-session-slider {
@@ -878,6 +882,235 @@
   .focus-session-slider:disabled {
     cursor: not-allowed;
     opacity: 0.48;
+  }
+
+  .tasks-visibility-toggle {
+    color: color-mix(in oklab, var(--muted-foreground) 92%, transparent);
+    align-self: center;
+    transition:
+      transform 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart);
+  }
+
+  .tasks-visibility-toggle:hover {
+    background: color-mix(in oklab, var(--secondary) 36%, transparent);
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .tasks-visibility-toggle[aria-pressed="true"] {
+    background: color-mix(in oklab, var(--secondary) 28%, transparent);
+  }
+
+  .tasks-entry-shell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem 0.5rem 0.75rem;
+  }
+
+  .tasks-entry-input {
+    min-width: 0;
+  }
+
+  .tasks-entry-submit {
+    transition:
+      transform 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart),
+      opacity 180ms var(--ease-out-quart);
+  }
+
+  .tasks-entry-shell[data-filled="true"] .tasks-entry-submit {
+    color: color-mix(in oklab, var(--foreground) 76%, var(--primary));
+    transform: translateX(1px);
+  }
+
+  .tasks-entry-submit:hover {
+    background: color-mix(in oklab, var(--secondary) 26%, transparent);
+    color: color-mix(in oklab, var(--foreground) 82%, transparent);
+    transform: translateX(2px) translateY(-1px);
+  }
+
+  .tasks-list {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 28%, transparent)
+      transparent;
+    overscroll-behavior: contain;
+  }
+
+  .tasks-drag-handle {
+    cursor: grab;
+    color: color-mix(in oklab, var(--muted-foreground) 54%, transparent);
+    transition:
+      transform 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart),
+      opacity 180ms var(--ease-out-quart);
+  }
+
+  .tasks-drag-handle:hover {
+    background: color-mix(in oklab, var(--secondary) 30%, transparent);
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  .tasks-drag-handle:active,
+  .tasks-drag-handle[aria-grabbed="true"] {
+    cursor: grabbing;
+    transform: scale(0.94);
+  }
+
+  .tasks-row {
+    min-width: 0;
+    position: relative;
+    border-radius: var(--radius-md);
+    transform-origin: left center;
+    transition:
+      transform 220ms var(--ease-out-quart),
+      opacity 220ms var(--ease-out-quart);
+  }
+
+  .tasks-row::before {
+    content: "";
+    position: absolute;
+    inset: -0.18rem -0.4rem;
+    z-index: -1;
+    border-radius: calc(var(--radius-md) + 2px);
+    background: color-mix(in oklab, var(--secondary) 24%, transparent);
+    opacity: 0;
+    transform: scale(0.985);
+    transition:
+      transform 220ms var(--ease-out-quart),
+      opacity 220ms var(--ease-out-quart),
+      background-color 220ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+
+  .tasks-row::after {
+    content: "";
+    position: absolute;
+    left: 0.4rem;
+    right: 0.4rem;
+    height: 2px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--primary) 54%, var(--accent));
+    opacity: 0;
+    transform: scaleX(0.94);
+    transition:
+      transform 180ms var(--ease-out-quart),
+      opacity 180ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+
+  .group\/task:hover .tasks-row::before,
+  .group\/task:focus-within .tasks-row::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .tasks-row[data-dragging="true"] {
+    opacity: 0.72;
+    transform: scale(0.988);
+  }
+
+  .tasks-row[data-drop-position="before"]::after,
+  .tasks-row[data-drop-position="after"]::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .tasks-row[data-drop-position="before"]::after {
+    top: -0.15rem;
+  }
+
+  .tasks-row[data-drop-position="after"]::after {
+    bottom: -0.15rem;
+  }
+
+  .tasks-row[data-entering="true"] {
+    animation: tasks-row-enter 320ms var(--ease-out-expo);
+  }
+
+  .tasks-row[data-completing="true"] {
+    animation: tasks-row-complete 420ms var(--ease-out-quart);
+  }
+
+  .tasks-row[data-completed="true"]::before {
+    background: color-mix(in oklab, var(--primary) 10%, var(--secondary));
+  }
+
+  .tasks-checkbox {
+    border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+    background: color-mix(in oklab, var(--card) 96%, transparent);
+    color: color-mix(in oklab, var(--primary) 88%, white 6%);
+    transition:
+      border-color 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart),
+      transform 140ms var(--ease-out-quart),
+      box-shadow 180ms var(--ease-out-quart);
+  }
+
+  .tasks-checkbox:focus-visible,
+  .tasks-drag-handle:focus-visible,
+  .tasks-item-text:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 46%, transparent);
+    outline-offset: 2px;
+  }
+
+  .tasks-checkbox:hover {
+    border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+    background: color-mix(in oklab, var(--secondary) 32%, var(--card));
+    transform: scale(1.03);
+  }
+
+  .tasks-checkbox[data-completed="true"] {
+    border-color: color-mix(in oklab, var(--primary) 44%, var(--border));
+    background: color-mix(in oklab, var(--primary) 26%, var(--secondary));
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 8%, transparent);
+  }
+
+  .tasks-checkbox:active {
+    transform: scale(0.94);
+  }
+
+  .tasks-checkbox-icon {
+    display: inline-flex;
+    animation: tasks-check-pop 220ms var(--ease-out-expo);
+  }
+
+  .tasks-remove-button {
+    color: color-mix(in oklab, var(--muted-foreground) 42%, transparent);
+    opacity: 0;
+    transform: translateX(3px);
+    transition:
+      transform 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      opacity 180ms var(--ease-out-quart);
+  }
+
+  .group\/task:hover .tasks-remove-button,
+  .group\/task:focus-within .tasks-remove-button {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .tasks-remove-button:hover {
+    background: color-mix(in oklab, var(--secondary) 26%, transparent);
+    color: color-mix(in oklab, var(--foreground) 78%, transparent);
+  }
+
+  .tasks-empty {
+    color: color-mix(in oklab, var(--muted-foreground) 90%, transparent);
+    animation: tasks-empty-fade 220ms var(--ease-out-quart);
+  }
+
+  @media (hover: none) {
+    .tasks-remove-button {
+      opacity: 1;
+    }
   }
 
   .status-dot {
@@ -1092,6 +1325,56 @@
   }
 }
 
+@keyframes tasks-row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tasks-row-complete {
+  0% {
+    transform: none;
+  }
+
+  35% {
+    transform: translateX(2px) scale(0.992);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes tasks-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tasks-empty-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes app-splash-shell-in {
   from {
     opacity: 0;
@@ -1298,7 +1581,17 @@
   .focus-control-button,
   .focus-style-dot,
   .focus-orb-progress,
-  .focus-session-control {
+  .focus-session-control,
+  .tasks-entry-shell,
+  .tasks-entry-submit,
+  .tasks-drag-handle,
+  .tasks-row,
+  .tasks-row::before,
+  .tasks-row::after,
+  .tasks-checkbox,
+  .tasks-checkbox-icon,
+  .tasks-remove-button,
+  .tasks-visibility-toggle {
     transition: none;
     animation: none;
   }

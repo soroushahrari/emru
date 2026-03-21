@@ -10,9 +10,15 @@ export interface BlockBase {
   zIndex: number
 }
 
+export interface TaskItem {
+  id: string
+  text: string
+  completed: boolean
+}
+
 export interface TasksBlockData {
   title: string
-  items: string[]
+  items: TaskItem[]
 }
 
 export interface NotesBlockData {

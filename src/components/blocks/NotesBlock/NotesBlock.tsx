@@ -36,7 +36,7 @@ export const NotesBlock = memo(function NotesBlock({
   return (
     <article
       className={cn(
-        "absolute min-w-0 overflow-hidden rounded-2xl bg-card p-3 shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
+        "canvas-block-shell absolute min-w-0 overflow-hidden rounded-2xl bg-card p-3 shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
         "select-none canvas-block-enter",
         landed && "canvas-drag-landed"
       )}
@@ -82,6 +82,7 @@ export const NotesBlock = memo(function NotesBlock({
       />
       <div
         className="resize-grip absolute bottom-1 right-1 h-5 w-5 cursor-se-resize"
+        data-visible={selected ? "true" : undefined}
         {...resizeHandleProps}
       />
     </article>

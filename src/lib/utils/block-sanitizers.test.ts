@@ -35,11 +35,12 @@ describe("block sanitizers", () => {
     expect(block?.height).toBeGreaterThanOrEqual(tasksBounds.minHeight)
     expect(block?.zIndex).toBe(1)
     expect(block.data.title).toBe("tasks")
-    expect(block.data.items).toEqual([
+    expect(block.data.items.map((item) => item.text)).toEqual([
       "ship feature",
       "emoji ✅",
       "x".repeat(280),
     ])
+    expect(block.data.items.every((item) => item.completed === false)).toBe(true)
   })
 
   it("limits notes text and normalizes focus timer data", () => {

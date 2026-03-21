@@ -71,9 +71,21 @@ function createBlock(type: BlockType, x: number, y: number): Block {
       data: {
         title: "tasks",
         items: [
-          "Review priorities",
-          "Ship one meaningful thing",
-          "Close the day calm",
+          {
+            id: createBlockId(),
+            text: "Review priorities",
+            completed: false,
+          },
+          {
+            id: createBlockId(),
+            text: "Ship one meaningful thing",
+            completed: false,
+          },
+          {
+            id: createBlockId(),
+            text: "Close the day calm",
+            completed: true,
+          },
         ],
       },
     }

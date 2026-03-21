@@ -3,6 +3,7 @@ import type {
   BlockType,
   FocusBlockData,
   NotesBlockData,
+  TaskItem,
   TasksBlockData,
 } from "@/types/block.types"
 import {
@@ -14,8 +15,8 @@ import {
 const VALID_BLOCK_TYPES: BlockType[] = ["tasks", "notes", "focus"]
 const MAX_COORDINATE = 1_000_000
 const MAX_TITLE_LENGTH = 120
-const MAX_TASK_ITEMS = 1_000
-const MAX_TASK_ITEM_LENGTH = 280
+export const MAX_TASK_ITEMS = 1_000
+export const MAX_TASK_ITEM_LENGTH = 280
 export const MAX_NOTES_TEXT_LENGTH = 20_000
 
 interface BlockSizeBounds {
@@ -107,14 +108,47 @@ function isBlockType(value: unknown): value is BlockType {
   )
 }
 
+function normalizeTaskItem(value: unknown): TaskItem | null {
+  if (typeof value === "string") {
+    const text = truncate(value.trim(), MAX_TASK_ITEM_LENGTH)
+    if (text.length === 0) {
+      return null
+    }
+
+    return {
+      id: createBlockId(),
+      text,
+      completed: false,
+    }
+  }
+
+  if (!value || typeof value !== "object") {
+    return null
+  }
+
+  const candidate = value as Partial<TaskItem> & { text?: unknown }
+  const text = truncate(asString(candidate.text).trim(), MAX_TASK_ITEM_LENGTH)
+  if (text.length === 0) {
+    return null
+  }
+
+  const id = asString(candidate.id).trim() || createBlockId()
+
+  return {
+    id,
+    text,
+    completed: asBoolean(candidate.completed, false),
+  }
+}
+
 function normalizeTasksData(value: unknown): TasksBlockData {
   const source =
     value && typeof value === "object" ? (value as Partial<TasksBlockData>) : {}
   const rawItems = Array.isArray(source.items) ? source.items : []
 
   const items = rawItems
-    .map((item) => truncate(asString(item).trim(), MAX_TASK_ITEM_LENGTH))
-    .filter((item) => item.length > 0)
+    .map((item) => normalizeTaskItem(item))
+    .filter((item): item is TaskItem => item !== null)
     .slice(0, MAX_TASK_ITEMS)
 
   return {

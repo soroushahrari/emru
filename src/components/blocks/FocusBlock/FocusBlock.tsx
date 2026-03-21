@@ -93,9 +93,9 @@ function SessionLengthControl({
   const autoRest = getAutoRestMinutes(focusValue)
 
   return (
-    <div className="focus-session-control rounded-md px-2 py-1.5">
-      <div className="mb-1 flex min-w-0 items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-        <span className="truncate">Session length</span>
+    <div className="canvas-block-inset focus-session-control rounded-lg px-2.5 py-2">
+      <div className="mb-1 flex min-w-0 items-center justify-between gap-2 text-[11px] text-muted-foreground">
+        <span className="truncate font-medium text-foreground/88">Session length</span>
         <span className="min-w-0 text-right font-sans text-[11px] tabular-nums normal-case text-foreground [overflow-wrap:anywhere]">
           {focusValue}m / auto break {autoRest}m
         </span>
@@ -248,7 +248,7 @@ export const FocusBlock = memo(function FocusBlock({
   return (
     <article
       className={cn(
-        "absolute flex min-w-0 flex-col overflow-hidden rounded-2xl bg-card shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
+        "canvas-block-shell absolute flex min-w-0 flex-col overflow-hidden rounded-2xl bg-card shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
         shellPadding,
         "canvas-block-enter select-none",
         landed && "canvas-drag-landed"
@@ -284,7 +284,10 @@ export const FocusBlock = memo(function FocusBlock({
           <span className="focus-grip inline-flex items-center justify-center rounded-full">
             <IconGrip />
           </span>
-          <span className="truncate text-muted-foreground [overflow-wrap:anywhere]" dir="auto">
+          <span
+            className="truncate font-medium normal-case tracking-normal text-foreground [overflow-wrap:anywhere]"
+            dir="auto"
+          >
             Focus
           </span>
         </div>
@@ -300,7 +303,7 @@ export const FocusBlock = memo(function FocusBlock({
           {isSettingsView ? (
             <div className={cn("focus-settings-scroll mx-auto flex min-h-0 w-full flex-1 flex-col overflow-auto pr-1", settingsColumnWidth, settingsGap)}>
               {!isMicro ? (
-                <div className="px-1 text-xs uppercase tracking-wide text-muted-foreground">
+                <div className="px-1 text-xs font-medium text-muted-foreground">
                   Timer settings
                 </div>
               ) : null}
@@ -315,7 +318,7 @@ export const FocusBlock = memo(function FocusBlock({
               />
               {!isMicro ? (
                 <div className="flex items-center justify-between px-1 text-xs text-muted-foreground">
-                  <span>Break</span>
+                  <span className="font-medium text-foreground/88">Break</span>
                   <span className="font-sans tabular-nums text-foreground/90">
                     Auto {autoRest}m
                   </span>
@@ -414,7 +417,7 @@ export const FocusBlock = memo(function FocusBlock({
             type="button"
             variant="default"
             size={primaryButtonSize}
-            className="focus-tap-target focus-control-button focus-control-button-primary rounded-full"
+            className="focus-tap-target focus-control-button rounded-full"
             onClick={toggleRunning}
             aria-label={isRunning ? "Pause timer" : "Start timer"}
           >
@@ -426,7 +429,7 @@ export const FocusBlock = memo(function FocusBlock({
             size={secondaryButtonSize}
             className={cn(
               "focus-tap-target focus-control-button focus-control-button-secondary rounded-full",
-              isSettingsView && "focus-view-switch bg-secondary/70 text-foreground"
+              isSettingsView && "bg-secondary text-foreground"
             )}
             onClick={() => {
               setIsSettingsView((current) => !current)
@@ -441,6 +444,7 @@ export const FocusBlock = memo(function FocusBlock({
 
       <div
         className="resize-grip absolute right-1 bottom-1 h-5 w-5 cursor-se-resize"
+        data-visible={selected ? "true" : undefined}
         {...resizeHandleProps}
       />
     </article>
