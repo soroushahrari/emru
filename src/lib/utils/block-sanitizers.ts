@@ -1,6 +1,7 @@
 import type {
   Block,
   BlockType,
+  CountdownBlockData,
   FocusBlockData,
   NotesBlockData,
   TaskItem,
@@ -12,7 +13,7 @@ import {
   getPhaseDurationMs,
 } from "@/lib/utils/focus-timer"
 
-const VALID_BLOCK_TYPES: BlockType[] = ["tasks", "notes", "focus"]
+const VALID_BLOCK_TYPES: BlockType[] = ["tasks", "notes", "focus", "countdown"]
 const MAX_COORDINATE = 1_000_000
 const MAX_TITLE_LENGTH = 120
 export const MAX_TASK_ITEMS = 1_000
@@ -53,12 +54,21 @@ const BLOCK_SIZE_BOUNDS: Record<BlockType, Readonly<BlockSizeBounds>> = {
     maxWidth: 460,
     maxHeight: 420,
   },
+  countdown: {
+    defaultWidth: 200,
+    defaultHeight: 220,
+    minWidth: 180,
+    minHeight: 200,
+    maxWidth: 420,
+    maxHeight: 420,
+  },
 }
 
 const DEFAULT_TITLE: Record<BlockType, string> = {
   tasks: "tasks",
   notes: "notes",
   focus: "focus",
+  countdown: "Countdown",
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -220,6 +230,70 @@ function normalizeFocusData(value: unknown): FocusBlockData {
   }
 }
 
+function normalizeDateOnly(value: unknown) {
+  const raw = asString(value).trim()
+  if (raw.length === 0) {
+    return null
+  }
+
+  const dateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw)
+  if (dateOnlyMatch) {
+    const [, year, month, day] = dateOnlyMatch
+    const normalized = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    )
+
+    if (
+      normalized.getFullYear() !== Number(year) ||
+      normalized.getMonth() !== Number(month) - 1 ||
+      normalized.getDate() !== Number(day)
+    ) {
+      return null
+    }
+
+    return raw
+  }
+
+  const parsed = new Date(raw)
+  if (Number.isNaN(parsed.getTime())) {
+    return null
+  }
+
+  const year = parsed.getFullYear()
+  const month = `${parsed.getMonth() + 1}`.padStart(2, "0")
+  const day = `${parsed.getDate()}`.padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+function normalizeIsoTimestamp(value: unknown) {
+  const raw = asString(value).trim()
+  if (raw.length === 0) {
+    return new Date().toISOString()
+  }
+
+  const parsed = new Date(raw)
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date().toISOString()
+  }
+
+  return parsed.toISOString()
+}
+
+function normalizeCountdownData(value: unknown): CountdownBlockData {
+  const source =
+    value && typeof value === "object"
+      ? (value as Partial<CountdownBlockData>)
+      : {}
+
+  return {
+    label: normalizeTitle(source.label, DEFAULT_TITLE.countdown),
+    targetDate: normalizeDateOnly(source.targetDate),
+    createdAt: normalizeIsoTimestamp(source.createdAt),
+  }
+}
+
 export function createBlockId() {
   if (
     typeof crypto !== "undefined" &&
@@ -297,6 +371,19 @@ export function sanitizeBlock(input: unknown): Block | null {
       height,
       zIndex,
       data: normalizeNotesData(candidate.data),
+    }
+  }
+
+  if (type === "countdown") {
+    return {
+      id,
+      type,
+      x,
+      y,
+      width,
+      height,
+      zIndex,
+      data: normalizeCountdownData(candidate.data),
     }
   }
 

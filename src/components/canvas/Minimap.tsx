@@ -238,7 +238,7 @@ export const Minimap = memo(function Minimap({
         <div
           key={block.id}
           className={cn(
-            "absolute rounded-sm transition-[background-color,box-shadow,opacity] duration-150",
+            "canvas-minimap-block absolute rounded-sm transition-[background-color,box-shadow,opacity] duration-150",
             block.id === activeBlockId
               ? "bg-primary/70 shadow-[0_0_0_1px_rgba(212,105,42,0.42)]"
               : relatedIdSet.has(block.id)
@@ -255,7 +255,7 @@ export const Minimap = memo(function Minimap({
       ))}
       <div
         className={cn(
-          "absolute rounded-sm bg-primary/12 transition-shadow duration-150",
+          "canvas-minimap-viewport absolute rounded-sm bg-primary/12 transition-shadow duration-150",
           isDraggingViewport
             ? "shadow-[0_0_0_1.5px_rgba(212,105,42,0.55),0_0_0_7px_rgba(212,105,42,0.12)]"
             : "shadow-[0_0_0_1px_rgba(212,105,42,0.45)]"

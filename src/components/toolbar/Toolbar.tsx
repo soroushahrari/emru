@@ -186,7 +186,7 @@ export const Toolbar = memo(function Toolbar({
           </TooltipTrigger>
           <TooltipContent side="top" className="flex items-center gap-2">
             <span>Add block</span>
-            <span className="opacity-70">T / N / F</span>
+            <span className="opacity-70">T / N / C / F</span>
           </TooltipContent>
         </Tooltip>
         <div
@@ -223,6 +223,18 @@ export const Toolbar = memo(function Toolbar({
           >
             <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground/50" />
             Notes
+          </button>
+          <button
+            type="button"
+            className="canvas-menu-item flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-secondary/70"
+            onClick={() => {
+              onAddBlock("countdown")
+              setAddMenuOpen(false)
+            }}
+            role="menuitem"
+          >
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+            Countdown
           </button>
           <button
             type="button"

@@ -116,6 +116,9 @@ export function useKeyboardShortcuts({
         case "n":
           addBlockAtViewportCenter("notes")
           return
+        case "c":
+          addBlockAtViewportCenter("countdown")
+          return
         case "f":
           addBlockAtViewportCenter("focus")
           return

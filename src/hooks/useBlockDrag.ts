@@ -1,28 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core"
 
-import {
-  resolveMagneticArrangement,
-  type ArrangementState,
-} from "@/lib/utils/arrangement.utils"
+import { resolveMagneticArrangement } from "@/lib/utils/arrangement.utils"
 import { useBlocksStore, type BlocksSnapshot } from "@/store/blocks.store"
 import { useCanvasStore } from "@/store/canvas.store"
 
 type PositionMap = Record<string, { x: number; y: number }>
 
-const EMPTY_ARRANGEMENT_STATE: ArrangementState = {
-  activeBlockId: null,
-  guides: [],
-  relatedBlockIds: [],
-}
-
 export function useBlockDrag() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [draggingIdsState, setDraggingIdsState] = useState<string[]>([])
   const [landedIdsState, setLandedIdsState] = useState<string[]>([])
-  const [arrangementState, setArrangementState] = useState<ArrangementState>(
-    EMPTY_ARRANGEMENT_STATE
-  )
   const movingIdsRef = useRef<string[]>([])
   const startPositionsRef = useRef<PositionMap>({})
   const snapshotRef = useRef<BlocksSnapshot | null>(null)
@@ -39,7 +27,6 @@ export function useBlockDrag() {
   const reset = () => {
     setActiveDragId(null)
     setDraggingIdsState([])
-    setArrangementState(EMPTY_ARRANGEMENT_STATE)
     movingIdsRef.current = []
     startPositionsRef.current = {}
     snapshotRef.current = null
@@ -74,7 +61,6 @@ export function useBlockDrag() {
       guides: [],
       relatedBlockIds: [],
     }
-    setArrangementState(nextArrangement)
     canvasStore.setArrangement(nextArrangement)
 
     movingIdsRef.current = movingIds
@@ -123,7 +109,6 @@ export function useBlockDrag() {
       guides: result.guides,
       relatedBlockIds: result.relatedBlockIds,
     }
-    setArrangementState(nextArrangement)
     useCanvasStore.getState().setArrangement(nextArrangement)
   }
 
@@ -165,7 +150,6 @@ export function useBlockDrag() {
 
   return {
     activeDragId,
-    arrangementState,
     draggingIds,
     landedIds,
     onDragStart,

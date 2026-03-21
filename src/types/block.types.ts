@@ -1,4 +1,4 @@
-export type BlockType = "tasks" | "notes" | "focus"
+export type BlockType = "tasks" | "notes" | "focus" | "countdown"
 
 export interface BlockBase {
   id: string
@@ -38,6 +38,12 @@ export interface FocusBlockData {
   compact: boolean
 }
 
+export interface CountdownBlockData {
+  label: string
+  targetDate: string | null
+  createdAt: string
+}
+
 export interface TasksBlock extends BlockBase {
   type: "tasks"
   data: TasksBlockData
@@ -53,7 +59,12 @@ export interface FocusBlock extends BlockBase {
   data: FocusBlockData
 }
 
-export type Block = TasksBlock | NotesBlock | FocusBlock
+export interface CountdownBlock extends BlockBase {
+  type: "countdown"
+  data: CountdownBlockData
+}
+
+export type Block = TasksBlock | NotesBlock | FocusBlock | CountdownBlock
 
 export interface BlockPositionUpdate {
   id: string

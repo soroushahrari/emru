@@ -5,7 +5,12 @@ import {
 } from "react"
 import { DndContext, useDraggable } from "@dnd-kit/core"
 
-import { FocusBlock, NotesBlock, TasksBlock } from "@/components/blocks"
+import {
+  CountdownBlock,
+  FocusBlock,
+  NotesBlock,
+  TasksBlock,
+} from "@/components/blocks"
 import { useBlockDrag } from "@/hooks/useBlockDrag"
 import { useBlocksStore } from "@/store/blocks.store"
 import { useCanvasStore } from "@/store/canvas.store"
@@ -68,6 +73,18 @@ const DraggableBlock = memo(function DraggableBlock({
       return (
         <div ref={setNodeRef}>
           <FocusBlock
+            blockId={blockId}
+            selected={selected}
+            isDragging={isDragging}
+            landed={landed}
+            dragHandleProps={dragHandleProps}
+          />
+        </div>
+      )
+    case "countdown":
+      return (
+        <div ref={setNodeRef}>
+          <CountdownBlock
             blockId={blockId}
             selected={selected}
             isDragging={isDragging}

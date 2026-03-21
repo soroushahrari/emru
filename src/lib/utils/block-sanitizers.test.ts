@@ -100,6 +100,36 @@ describe("block sanitizers", () => {
     expect(focus.height).toBe(focusBounds.minHeight)
   })
 
+  it("normalizes malformed countdown payloads", () => {
+    const countdownBounds = getBlockSizeBounds("countdown")
+    const countdown = sanitizeBlock({
+      id: "",
+      type: "countdown",
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 10,
+      zIndex: 0,
+      data: {
+        label: "   ",
+        targetDate: "not-a-date",
+        createdAt: "bad-iso",
+      },
+    })
+
+    expect(countdown?.type).toBe("countdown")
+    if (!countdown || countdown.type !== "countdown") {
+      throw new Error("expected countdown block")
+    }
+
+    expect(countdown.width).toBe(countdownBounds.minWidth)
+    expect(countdown.height).toBe(countdownBounds.minHeight)
+    expect(countdown.zIndex).toBe(1)
+    expect(countdown.data.label).toBe("Countdown")
+    expect(countdown.data.targetDate).toBeNull()
+    expect(Number.isNaN(Date.parse(countdown.data.createdAt))).toBe(false)
+  })
+
   it("clamps width and height to per-block bounds", () => {
     const notesBounds = getBlockSizeBounds("notes")
     const notes = sanitizeBlock({

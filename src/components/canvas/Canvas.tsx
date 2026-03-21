@@ -116,6 +116,23 @@ function createBlock(type: BlockType, x: number, y: number): Block {
     }
   }
 
+  if (type === "countdown") {
+    return {
+      id: createBlockId(),
+      type,
+      x,
+      y,
+      width: defaultWidth,
+      height: defaultHeight,
+      zIndex: 10,
+      data: {
+        label: "Countdown",
+        targetDate: null,
+        createdAt: new Date().toISOString(),
+      },
+    }
+  }
+
   return {
     id: createBlockId(),
     type,
@@ -507,6 +524,7 @@ export function Canvas() {
           <p className="mt-1 text-xs text-muted-foreground">
             press <span className="font-mono">t</span>,{" "}
             <span className="font-mono">n</span>, or{" "}
+            <span className="font-mono">c</span>, or{" "}
             <span className="font-mono">f</span> to add blocks fast.
           </p>
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -527,6 +545,15 @@ export function Canvas() {
               }}
             >
               add notes
+            </button>
+            <button
+              type="button"
+              className="min-w-0 rounded-md border border-border bg-secondary/70 px-2 py-1.5 text-left text-xs [overflow-wrap:anywhere] hover:border-primary/45"
+              onClick={() => {
+                addBlockAtViewportCenter("countdown")
+              }}
+            >
+              add countdown
             </button>
             <button
               type="button"
