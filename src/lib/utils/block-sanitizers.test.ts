@@ -3,12 +3,14 @@ import { describe, expect, it } from "vitest"
 import {
   MAX_NOTES_TEXT_LENGTH,
   createBlockId,
+  getBlockSizeBounds,
   sanitizeBlock,
   sanitizeBlocksRecord,
 } from "@/lib/utils/block-sanitizers"
 
 describe("block sanitizers", () => {
   it("normalizes malformed tasks block payload", () => {
+    const tasksBounds = getBlockSizeBounds("tasks")
     const block = sanitizeBlock({
       id: "",
       type: "tasks",
@@ -29,8 +31,8 @@ describe("block sanitizers", () => {
       throw new Error("expected tasks block")
     }
     expect(block?.id.length).toBeGreaterThan(0)
-    expect(block?.width).toBeGreaterThanOrEqual(160)
-    expect(block?.height).toBeGreaterThanOrEqual(120)
+    expect(block?.width).toBeGreaterThanOrEqual(tasksBounds.minWidth)
+    expect(block?.height).toBeGreaterThanOrEqual(tasksBounds.minHeight)
     expect(block?.zIndex).toBe(1)
     expect(block.data.title).toBe("tasks")
     expect(block.data.items).toEqual([
@@ -41,6 +43,7 @@ describe("block sanitizers", () => {
   })
 
   it("limits notes text and normalizes focus timer data", () => {
+    const focusBounds = getBlockSizeBounds("focus")
     const notes = sanitizeBlock({
       id: "n1",
       type: "notes",
@@ -93,6 +96,32 @@ describe("block sanitizers", () => {
     expect(focus.data.endsAt).toBeNull()
     expect(focus.data.remainingMs).toBe(180 * 60 * 1000)
     expect(focus.data.compact).toBe(false)
+    expect(focus.height).toBe(focusBounds.minHeight)
+  })
+
+  it("clamps width and height to per-block bounds", () => {
+    const notesBounds = getBlockSizeBounds("notes")
+    const notes = sanitizeBlock({
+      id: "notes-max",
+      type: "notes",
+      x: 0,
+      y: 0,
+      width: Number.MAX_SAFE_INTEGER,
+      height: Number.MAX_SAFE_INTEGER,
+      zIndex: 10,
+      data: {
+        title: "notes",
+        text: "",
+      },
+    })
+
+    expect(notes?.type).toBe("notes")
+    if (!notes || notes.type !== "notes") {
+      throw new Error("expected notes block")
+    }
+
+    expect(notes.width).toBe(notesBounds.maxWidth)
+    expect(notes.height).toBe(notesBounds.maxHeight)
   })
 
   it("filters invalid persisted records", () => {

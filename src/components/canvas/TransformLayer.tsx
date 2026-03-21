@@ -18,12 +18,14 @@ interface DraggableBlockProps {
   blockId: string
   selected: boolean
   isDragging: boolean
+  landed: boolean
 }
 
 const DraggableBlock = memo(function DraggableBlock({
   blockId,
   selected,
   isDragging,
+  landed,
 }: DraggableBlockProps) {
   const blockType = useBlocksStore((state) => state.blocks[blockId]?.type)
   const { attributes, listeners, setNodeRef } = useDraggable({ id: blockId })
@@ -45,7 +47,7 @@ const DraggableBlock = memo(function DraggableBlock({
             blockId={blockId}
             selected={selected}
             isDragging={isDragging}
-            landed={false}
+            landed={landed}
             dragHandleProps={dragHandleProps}
           />
         </div>
@@ -57,7 +59,7 @@ const DraggableBlock = memo(function DraggableBlock({
             blockId={blockId}
             selected={selected}
             isDragging={isDragging}
-            landed={false}
+            landed={landed}
             dragHandleProps={dragHandleProps}
           />
         </div>
@@ -69,7 +71,7 @@ const DraggableBlock = memo(function DraggableBlock({
             blockId={blockId}
             selected={selected}
             isDragging={isDragging}
-            landed={false}
+            landed={landed}
             dragHandleProps={dragHandleProps}
           />
         </div>
@@ -90,6 +92,7 @@ export const TransformLayer = memo(function TransformLayer({
   const {
     activeDragId,
     draggingIds,
+    landedIds,
     onDragStart,
     onDragMove,
     onDragEnd,
@@ -127,6 +130,7 @@ export const TransformLayer = memo(function TransformLayer({
             blockId={block.id}
             selected={selectedIdSet.has(block.id)}
             isDragging={draggingIds.has(block.id)}
+            landed={landedIds.has(block.id)}
           />
         ))}
       </div>

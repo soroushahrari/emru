@@ -1,6 +1,7 @@
 import { memo, type HTMLAttributes } from "react"
 
 import { useBlockResize } from "@/hooks/useBlockResize"
+import { getBlockSizeBounds } from "@/lib/utils/block-sanitizers"
 import { cn } from "@/lib/utils"
 
 import { useTasksBlock } from "./useTasksBlock"
@@ -29,6 +30,7 @@ export const TasksBlock = memo(function TasksBlock({
     return null
   }
 
+  const sizeBounds = getBlockSizeBounds(block.type)
   const visibleItems = block.data.items.slice(0, MAX_VISIBLE_TASK_ITEMS)
   const hiddenCount = block.data.items.length - visibleItems.length
 
@@ -44,6 +46,10 @@ export const TasksBlock = memo(function TasksBlock({
         top: block.y,
         width: block.width,
         height: block.height,
+        minWidth: sizeBounds.minWidth,
+        minHeight: sizeBounds.minHeight,
+        maxWidth: sizeBounds.maxWidth,
+        maxHeight: sizeBounds.maxHeight,
         zIndex: block.zIndex,
         outline: selected ? "1.5px solid rgba(212, 105, 42, 0.7)" : "none",
         outlineOffset: selected ? "1px" : "0",

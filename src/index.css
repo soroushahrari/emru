@@ -696,11 +696,188 @@
   }
 
   .focus-tap-target {
-    min-height: 2rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
   }
 
-  .focus-stepper-button {
-    min-width: 1.65rem;
+  .focus-control-row {
+    transition: opacity 180ms var(--ease-out-quart);
+  }
+
+  .focus-grip {
+    width: 1rem;
+    height: 1rem;
+    color: color-mix(in oklab, var(--muted-foreground) 68%, transparent);
+  }
+
+  .focus-orb {
+    border-radius: 999px;
+    contain: layout paint;
+  }
+
+  .focus-orb-track {
+    stroke: color-mix(in oklab, var(--border) 68%, transparent);
+    opacity: 0.82;
+  }
+
+  .focus-orb-progress {
+    stroke-linecap: round;
+    will-change: stroke-dashoffset;
+    filter: drop-shadow(0 0 4px color-mix(in oklab, var(--primary) 10%, transparent));
+  }
+
+  .focus-clock-shell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1em;
+  }
+
+  .focus-style-dot {
+    width: 0.32rem;
+    height: 0.32rem;
+    border: 1px solid color-mix(in oklab, var(--border) 58%, transparent);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--muted-foreground) 20%, transparent);
+    opacity: 0.9;
+    transition: background-color 180ms var(--ease-out-quart);
+  }
+
+  .focus-style-dot[data-active="true"] {
+    background: color-mix(in oklab, var(--accent) 78%, var(--primary));
+    border-color: color-mix(in oklab, var(--accent) 58%, transparent);
+  }
+
+  .focus-control-button {
+    transition:
+      transform 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      border-color 180ms var(--ease-out-quart),
+      box-shadow 180ms var(--ease-out-quart);
+  }
+
+  .focus-control-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .focus-view-switch {
+    border: 1px solid color-mix(in oklab, var(--primary) 30%, var(--border));
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--paper-950) 12%, transparent);
+  }
+
+  .focus-control-button-secondary {
+    color: color-mix(in oklab, var(--foreground) 56%, transparent);
+    border: 1px solid transparent;
+    background: transparent;
+  }
+
+  .focus-control-button-secondary:hover {
+    background: color-mix(in oklab, var(--secondary) 36%, transparent);
+    color: color-mix(in oklab, var(--foreground) 78%, transparent);
+  }
+
+  .focus-control-button-primary {
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--paper-950) 20%, transparent),
+      0 8px 18px color-mix(in oklab, var(--primary) 10%, transparent);
+  }
+
+  .focus-control-button-primary:hover {
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--paper-950) 24%, transparent),
+      0 10px 22px color-mix(in oklab, var(--primary) 14%, transparent);
+  }
+
+  .focus-session-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .focus-session-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .focus-settings-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 30%, transparent)
+      transparent;
+    overscroll-behavior: contain;
+  }
+
+  .focus-session-control {
+    border: 1px solid color-mix(in oklab, var(--border) 52%, transparent);
+    background: color-mix(in oklab, var(--secondary) 22%, transparent);
+    transition:
+      border-color 180ms var(--ease-out-quart),
+      background-color 180ms var(--ease-out-quart),
+      box-shadow 180ms var(--ease-out-quart);
+  }
+
+  .focus-session-control:focus-within {
+    border-color: color-mix(in oklab, var(--primary) 36%, var(--border));
+    background-color: color-mix(in oklab, var(--secondary) 54%, var(--card));
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 10%, transparent);
+  }
+
+  .focus-session-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  .focus-session-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--muted) 74%, var(--border));
+  }
+
+  .focus-session-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--primary) 40%, var(--border));
+    background: color-mix(in oklab, var(--card) 90%, var(--background));
+    box-shadow: 0 1px 4px color-mix(in oklab, var(--foreground) 14%, transparent);
+  }
+
+  .focus-session-slider::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    border: 0;
+    background: color-mix(in oklab, var(--muted) 74%, var(--border));
+  }
+
+  .focus-session-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--primary) 40%, var(--border));
+    background: color-mix(in oklab, var(--card) 90%, var(--background));
+    box-shadow: 0 1px 4px color-mix(in oklab, var(--foreground) 14%, transparent);
+  }
+
+  .focus-session-slider:focus-visible {
+    outline: none;
+  }
+
+  .focus-session-slider:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid color-mix(in oklab, var(--primary) 56%, transparent);
+    outline-offset: 2px;
+  }
+
+  .focus-session-slider:focus-visible::-moz-range-thumb {
+    outline: 2px solid color-mix(in oklab, var(--primary) 56%, transparent);
+    outline-offset: 2px;
+  }
+
+  .focus-session-slider:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
   }
 
   .status-dot {
@@ -841,8 +1018,12 @@
   }
 
   @media (pointer: coarse) {
-    .focus-tap-target,
-    .focus-stepper-button {
+    .resize-grip {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .focus-tap-target {
       min-width: 2.75rem;
       min-height: 2.75rem;
     }
@@ -947,17 +1128,17 @@
 }
 
 .canvas-block-enter {
-  animation: canvas-block-enter 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: canvas-block-enter 220ms var(--ease-out-quint);
 }
 
 .canvas-drag-landed {
-  animation: canvas-drag-landed 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: canvas-drag-landed 180ms var(--ease-out-quart);
 }
 
 @keyframes canvas-block-enter {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(8px);
+    transform: scale(0.96) translateY(8px);
   }
 
   to {
@@ -1112,8 +1293,14 @@
   .brand-mark-wrap,
   .feedback-chip,
   .floating-card,
-  .focus-surface-compact {
+  .focus-surface-compact,
+  .focus-control-row,
+  .focus-control-button,
+  .focus-style-dot,
+  .focus-orb-progress,
+  .focus-session-control {
     transition: none;
+    animation: none;
   }
 
   .focus-surface-compact:hover {

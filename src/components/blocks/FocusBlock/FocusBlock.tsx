@@ -1,7 +1,12 @@
-import { memo, useState, type HTMLAttributes } from "react"
+import { memo, useEffect, useRef, useState, type HTMLAttributes } from "react"
 
 import { Button } from "@/components/ui/button"
 import { useBlockResize } from "@/hooks/useBlockResize"
+import { getBlockSizeBounds } from "@/lib/utils/block-sanitizers"
+import {
+  MAX_FOCUS_MINUTES,
+  MIN_FOCUS_MINUTES,
+} from "@/lib/utils/focus-timer"
 import { cn } from "@/lib/utils"
 
 import { useFocusBlock } from "./useFocusBlock"
@@ -42,93 +47,99 @@ function IconReset() {
   )
 }
 
-function IconSliders() {
+function IconGrip() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+      <circle cx="8" cy="8" r="1.15" fill="currentColor" />
+      <circle cx="8" cy="12" r="1.15" fill="currentColor" />
+      <circle cx="8" cy="16" r="1.15" fill="currentColor" />
+      <circle cx="12" cy="8" r="1.15" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.15" fill="currentColor" />
+      <circle cx="12" cy="16" r="1.15" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconSettings() {
   return (
     <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
       <path
-        d="M6 5v14M18 5v14M12 5v14M4 9h4m8-4h4m-10 9h4"
+        d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6Zm8 3.3-1.6.8a6 6 0 0 1-.5 1.2l.9 1.5-1.8 1.8-1.5-.9a6 6 0 0 1-1.2.5L12 20l-2.3-.7a6 6 0 0 1-1.2-.5l-1.5.9-1.8-1.8.9-1.5a6 6 0 0 1-.5-1.2L4 12l.7-2.3a6 6 0 0 1 .5-1.2l-.9-1.5 1.8-1.8 1.5.9a6 6 0 0 1 1.2-.5L12 4l2.3.7a6 6 0 0 1 1.2.5l1.5-.9 1.8 1.8-.9 1.5c.2.4.4.8.5 1.2L20 12Z"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.35"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )
 }
 
-function IconPlus() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-3.5" aria-hidden="true">
-      <path
-        d="M12 6v12M6 12h12"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
+function getAutoRestMinutes(focusMinutes: number) {
+  return Math.min(MAX_FOCUS_MINUTES, Math.max(3, Math.round(focusMinutes / 5)))
 }
 
-function IconMinus() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-3.5" aria-hidden="true">
-      <path
-        d="M6 12h12"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-interface DurationMiniProps {
-  label: string
-  value: number
+interface SessionLengthControlProps {
+  focusValue: number
   disabled: boolean
-  onDecrease: () => void
-  onIncrease: () => void
+  onChange: (focusMinutes: number) => void
 }
 
-function DurationMini({
-  label,
-  value,
+function SessionLengthControl({
+  focusValue,
   disabled,
-  onDecrease,
-  onIncrease,
-}: DurationMiniProps) {
+  onChange,
+}: SessionLengthControlProps) {
+  const autoRest = getAutoRestMinutes(focusValue)
+
   return (
-    <div className="flex min-w-0 items-center gap-1 rounded-full border border-border/55 bg-secondary/55 px-1 py-1">
-      <span className="w-4 text-center text-[10px] font-medium text-muted-foreground uppercase">
-        {label}
-      </span>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-xs"
-        className="focus-stepper-button rounded-full"
+    <div className="focus-session-control rounded-md px-2 py-1.5">
+      <div className="mb-1 flex min-w-0 items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+        <span className="truncate">Session length</span>
+        <span className="min-w-0 text-right font-sans text-[11px] tabular-nums normal-case text-foreground [overflow-wrap:anywhere]">
+          {focusValue}m / auto break {autoRest}m
+        </span>
+      </div>
+      <input
+        type="range"
+        min={MIN_FOCUS_MINUTES}
+        max={MAX_FOCUS_MINUTES}
+        step={1}
+        value={focusValue}
         disabled={disabled}
-        onClick={onDecrease}
-        aria-label={`Decrease ${label} duration`}
-      >
-        <IconMinus />
-      </Button>
-      <span className="min-w-8 text-center font-mono text-sm tabular-nums">
-        {value}
-      </span>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-xs"
-        className="focus-stepper-button rounded-full"
-        disabled={disabled}
-        onClick={onIncrease}
-        aria-label={`Increase ${label} duration`}
-      >
-        <IconPlus />
-      </Button>
+        onChange={(event) => {
+          const next = Number.parseInt(event.target.value, 10)
+          if (!Number.isFinite(next)) {
+            return
+          }
+
+          onChange(next)
+        }}
+        aria-label="Session length"
+        className="focus-session-slider h-4 w-full"
+      />
+    </div>
+  )
+}
+
+interface FocusClockProps {
+  clock: string
+  fontSize: number
+}
+
+function FocusClock({ clock, fontSize }: FocusClockProps) {
+  return (
+    <div
+      className="focus-clock-shell font-sans tabular-nums font-medium text-foreground"
+      style={{
+        fontSize: `${fontSize}px`,
+        lineHeight: 0.94,
+        letterSpacing: "-0.04em",
+      }}
+      dir="ltr"
+      aria-live="off"
+    >
+      {clock}
     </div>
   )
 }
@@ -140,6 +151,10 @@ export const FocusBlock = memo(function FocusBlock({
   landed,
   dragHandleProps,
 }: FocusBlockProps) {
+  const [isSettingsView, setIsSettingsView] = useState(false)
+  const [sessionIndex, setSessionIndex] = useState(0)
+  const previousPhaseRef = useRef<"focus" | "rest" | null>(null)
+  const previousStatusRef = useRef<"idle" | "running" | "paused" | null>(null)
   const {
     block,
     clock,
@@ -147,36 +162,94 @@ export const FocusBlock = memo(function FocusBlock({
     isRunning,
     toggleRunning,
     restart,
-    setFocusMinutes,
-    setRestMinutes,
+    setDurations,
   } = useFocusBlock(blockId)
   const { resizeHandleProps } = useBlockResize(blockId)
-  const [showTimerControls, setShowTimerControls] = useState(false)
+
+  useEffect(() => {
+    setIsSettingsView(false)
+    setSessionIndex(0)
+    previousPhaseRef.current = null
+    previousStatusRef.current = null
+  }, [blockId])
+
+  useEffect(() => {
+    if (!block) {
+      return
+    }
+
+    if (previousPhaseRef.current === null || previousStatusRef.current === null) {
+      previousPhaseRef.current = block.data.phase
+      previousStatusRef.current = block.data.status
+      return
+    }
+
+    const phaseChanged = previousPhaseRef.current !== block.data.phase
+    const completedRun =
+      previousStatusRef.current === "running" &&
+      block.data.status === "idle" &&
+      phaseChanged
+
+    if (completedRun) {
+      setSessionIndex((value) => (value + 1) % 4)
+    }
+
+    previousPhaseRef.current = block.data.phase
+    previousStatusRef.current = block.data.status
+  }, [block?.data.phase, block?.data.status])
 
   if (!block) {
     return null
   }
 
-  const isFocusPhase = block.data.phase === "focus"
-  const phaseToken = isFocusPhase ? "var(--primary)" : "var(--accent)"
+  const sizeBounds = getBlockSizeBounds(block.type)
+  const phaseToken = "var(--primary)"
   const progressPercent = Math.max(0, Math.min(100, progress * 100))
-  const canShowTimerControls = block.height >= 270 && block.width >= 270
-  const showDurationPanel = showTimerControls && canShowTimerControls
-
-  const reservedHeight = showDurationPanel ? 164 : 112
-  const heightLimit = block.height - reservedHeight
-  const widthLimit = block.width - 52
-  const ringSize = Math.max(
-    96,
-    Math.min(196, Math.floor(Math.min(heightLimit, widthLimit)))
-  )
-
-  const ringBackground = `conic-gradient(color-mix(in oklab, ${phaseToken} 82%, var(--foreground)) ${progressPercent}%, color-mix(in oklab, var(--muted) 90%, transparent) ${progressPercent}%)`
+  const shortSide = Math.min(block.width, block.height)
+  const isCompact = shortSide < 360
+  const isTight = shortSide < 320
+  const isMicro = shortSide < 290
+  const autoRest = getAutoRestMinutes(block.data.focusMinutes)
+  const progressScale = Math.max(0, Math.min(1, progressPercent / 100))
+  const isOrbLarge = block.width >= 390 && block.height >= 360
+  const isOrbMedium = block.width >= 330 && block.height >= 312
+  const isOrbCompact = block.width >= 290 && block.height >= 252
+  const orbBaseSize = isOrbLarge ? 214 : isOrbMedium ? 188 : isOrbCompact ? 160 : 138
+  const orbWidthLimit = Math.max(118, block.width - (isMicro ? 108 : isTight ? 114 : 126))
+  const orbHeightLimit = Math.max(118, block.height - (isMicro ? 142 : isTight ? 152 : 166))
+  const orbSize = Math.min(orbBaseSize, orbWidthLimit, orbHeightLimit)
+  const progressRadius = 106
+  const progressStroke = isOrbLarge ? 4.25 : isOrbMedium ? 4 : 3.5
+  const progressCircumference = 2 * Math.PI * progressRadius
+  const progressOffset = progressCircumference * (1 - progressScale)
+  const clockFontSize = Math.max(28, Math.min(50, Math.round(orbSize * 0.23)))
+  const sessionSteps = 4
+  const activeSteps = Math.max(1, Math.min(sessionSteps, sessionIndex + 1))
+  const secondaryButtonSize = isMicro ? "icon-sm" : "icon"
+  const primaryButtonSize = isMicro ? "icon-sm" : isTight ? "icon" : "icon-lg"
+  const bodyGap = isMicro ? "gap-1.5" : isTight ? "gap-2" : isCompact ? "gap-3" : "gap-4"
+  const controlGap = isMicro ? "gap-2" : isTight ? "gap-3" : "gap-4"
+  const headerMargin = isMicro ? "mb-2" : isCompact ? "mb-2.5" : "mb-3.5"
+  const settingsColumnWidth = isMicro ? "max-w-full" : isTight ? "max-w-[13rem]" : "max-w-[14.5rem]"
+  const settingsGap = isTight ? "gap-2" : "gap-3"
+  const clockInset =
+    orbSize >= 200
+      ? "1rem"
+      : orbSize >= 176
+        ? "0.9rem"
+        : orbSize >= 148
+          ? "0.8rem"
+          : "0.68rem"
+  const timerSpacing = isMicro ? "gap-1.5" : isTight ? "gap-2.5" : "gap-4"
+  const shellPadding = isMicro ? "p-2.5" : "p-3"
+  const headerChrome = isMicro ? "px-2 py-1" : "px-2.5 py-1.5"
+  const controlPadding = isMicro ? "px-1 pb-0.5 pt-0" : "px-2 pb-1 pt-1"
 
   return (
     <article
       className={cn(
-        "absolute min-w-0 overflow-hidden rounded-2xl bg-card/98 p-3 shadow-[0_8px_24px_rgba(0,0,0,0.16)]",
+        "absolute flex min-w-0 flex-col overflow-hidden rounded-2xl bg-card shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
+        shellPadding,
         "canvas-block-enter select-none",
         landed && "canvas-drag-landed"
       )}
@@ -185,6 +258,10 @@ export const FocusBlock = memo(function FocusBlock({
         top: block.y,
         width: block.width,
         height: block.height,
+        minWidth: sizeBounds.minWidth,
+        minHeight: sizeBounds.minHeight,
+        maxWidth: sizeBounds.maxWidth,
+        maxHeight: sizeBounds.maxHeight,
         zIndex: block.zIndex,
         outline: selected ? "1.5px solid rgba(212, 105, 42, 0.7)" : "none",
         outlineOffset: selected ? "1px" : "0",
@@ -196,120 +273,170 @@ export const FocusBlock = memo(function FocusBlock({
     >
       <header
         className={cn(
-          "mb-2 flex min-w-0 items-center justify-between rounded-full bg-secondary/72 px-2.5 py-1 text-[11px]",
+          headerMargin,
+          "flex min-w-0 items-center justify-between gap-3 rounded-lg bg-secondary/80 text-xs uppercase tracking-wide text-muted-foreground",
+          headerChrome,
           isDragging ? "cursor-grabbing" : "cursor-grab"
         )}
         {...dragHandleProps}
       >
-        <span
-          className="truncate [overflow-wrap:anywhere] text-muted-foreground"
-          dir="auto"
-        >
-          {block.data.title}
-        </span>
-        <span
-          className="inline-flex h-5 min-w-8 items-center justify-center rounded-full border px-1.5 text-[10px] font-medium uppercase"
-          style={{
-            borderColor: `color-mix(in oklab, ${phaseToken} 38%, var(--border))`,
-            color: `color-mix(in oklab, ${phaseToken} 74%, var(--foreground))`,
-            backgroundColor: `color-mix(in oklab, ${phaseToken} 15%, transparent)`,
-          }}
-        >
-          {isFocusPhase ? "f" : "r"}
-        </span>
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="focus-grip inline-flex items-center justify-center rounded-full">
+            <IconGrip />
+          </span>
+          <span className="truncate text-muted-foreground [overflow-wrap:anywhere]" dir="auto">
+            Focus
+          </span>
+        </div>
       </header>
 
-      <div className="flex h-[calc(100%-34px)] min-h-0 flex-col items-center justify-between gap-3">
-        <div className="grid min-h-0 flex-1 place-items-center">
-          <div
-            className="relative grid place-items-center rounded-full p-[3px]"
-            style={{
-              width: ringSize,
-              height: ringSize,
-              background: ringBackground,
-            }}
-          >
-            <div
-              className="absolute -inset-2 rounded-full opacity-40 blur-[10px]"
-              style={{
-                background: `radial-gradient(circle, color-mix(in oklab, ${phaseToken} 26%, transparent) 0%, transparent 72%)`,
-              }}
-            />
-            <div className="absolute inset-[3px] rounded-full bg-card" />
-            <div
-              className="relative text-center font-mono tabular-nums"
-              style={{
-                fontSize: `clamp(1.6rem, ${ringSize / 6.2}px, 2.25rem)`,
-              }}
-              dir="ltr"
-            >
-              {clock}
+      <div
+        className={cn(
+          "flex min-h-0 flex-1 flex-col",
+          bodyGap
+        )}
+      >
+        <div className="flex min-h-0 flex-1 flex-col">
+          {isSettingsView ? (
+            <div className={cn("focus-settings-scroll mx-auto flex min-h-0 w-full flex-1 flex-col overflow-auto pr-1", settingsColumnWidth, settingsGap)}>
+              {!isMicro ? (
+                <div className="px-1 text-xs uppercase tracking-wide text-muted-foreground">
+                  Timer settings
+                </div>
+              ) : null}
+
+              <SessionLengthControl
+                focusValue={block.data.focusMinutes}
+                disabled={isRunning}
+                onChange={(focusMinutes) => {
+                  setSessionIndex(0)
+                  setDurations(focusMinutes, getAutoRestMinutes(focusMinutes))
+                }}
+              />
+              {!isMicro ? (
+                <div className="flex items-center justify-between px-1 text-xs text-muted-foreground">
+                  <span>Break</span>
+                  <span className="font-sans tabular-nums text-foreground/90">
+                    Auto {autoRest}m
+                  </span>
+                </div>
+              ) : null}
             </div>
-          </div>
+          ) : (
+            <div
+              className={cn(
+                "flex min-h-0 flex-1 flex-col items-center justify-center",
+                timerSpacing
+              )}
+            >
+              <div
+                className={cn(
+                  "focus-orb relative mx-auto flex shrink-0 flex-col items-center justify-center"
+                )}
+                style={{ width: orbSize, height: orbSize }}
+              >
+                <svg
+                  viewBox="0 0 240 240"
+                  className="absolute inset-0 h-full w-full -rotate-90"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="120"
+                    cy="120"
+                    r={progressRadius}
+                    className="focus-orb-track"
+                    strokeWidth={progressStroke}
+                    fill="none"
+                  />
+                  <circle
+                    cx="120"
+                    cy="120"
+                    r={progressRadius}
+                    className="focus-orb-progress"
+                    strokeWidth={progressStroke}
+                    strokeDasharray={progressCircumference}
+                    strokeDashoffset={progressOffset}
+                    fill="none"
+                    style={{
+                      stroke: `color-mix(in oklab, ${phaseToken} 84%, white 10%)`,
+                    }}
+                  />
+                </svg>
+
+                <div
+                  className="focus-orb-inner absolute flex flex-col items-center justify-center rounded-full"
+                  style={{ inset: clockInset }}
+                >
+                  <FocusClock clock={clock} fontSize={clockFontSize} />
+                  <div
+                    className={cn("focus-session-indicator", isOrbCompact ? "mt-2.5" : "mt-2")}
+                    role="status"
+                    aria-label={`Session progress ${activeSteps} of ${sessionSteps}`}
+                  >
+                    <div className="focus-session-dots">
+                      {Array.from({ length: sessionSteps }, (_, index) => (
+                        <span
+                          key={index}
+                          className="focus-style-dot"
+                          data-active={index < activeSteps}
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="flex w-full items-center justify-center gap-2">
+        <div
+          className={cn(
+            "focus-control-row mt-auto flex w-full items-center justify-center",
+            controlPadding,
+            controlGap
+          )}
+        >
           <Button
             type="button"
-            size="icon"
-            className="focus-tap-target rounded-full"
-            onClick={toggleRunning}
-            aria-label={isRunning ? "Pause focus timer" : "Start focus timer"}
-          >
-            {isRunning ? <IconPause /> : <IconPlay />}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="focus-tap-target rounded-full"
-            onClick={restart}
+            variant="ghost"
+            size={secondaryButtonSize}
+            className="focus-tap-target focus-control-button focus-control-button-secondary rounded-full"
+            onClick={() => {
+              setSessionIndex(0)
+              restart()
+            }}
             aria-label="Reset timer"
           >
             <IconReset />
           </Button>
           <Button
             type="button"
-            variant="ghost"
-            size="icon"
-            className="focus-tap-target rounded-full"
-            disabled={!canShowTimerControls}
-            onClick={() => {
-              setShowTimerControls((value) => !value)
-            }}
-            aria-label="Toggle duration controls"
-            aria-pressed={showDurationPanel}
+            variant="default"
+            size={primaryButtonSize}
+            className="focus-tap-target focus-control-button focus-control-button-primary rounded-full"
+            onClick={toggleRunning}
+            aria-label={isRunning ? "Pause timer" : "Start timer"}
           >
-            <IconSliders />
+            {isRunning ? <IconPause /> : <IconPlay />}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size={secondaryButtonSize}
+            className={cn(
+              "focus-tap-target focus-control-button focus-control-button-secondary rounded-full",
+              isSettingsView && "focus-view-switch bg-secondary/70 text-foreground"
+            )}
+            onClick={() => {
+              setIsSettingsView((current) => !current)
+            }}
+            aria-label={isSettingsView ? "Close settings" : "Open settings"}
+            aria-pressed={isSettingsView}
+          >
+            <IconSettings />
           </Button>
         </div>
-
-        {showDurationPanel ? (
-          <div className="flex w-full items-center justify-center gap-2">
-            <DurationMini
-              label="f"
-              value={block.data.focusMinutes}
-              disabled={isRunning}
-              onDecrease={() => {
-                setFocusMinutes(block.data.focusMinutes - 1)
-              }}
-              onIncrease={() => {
-                setFocusMinutes(block.data.focusMinutes + 1)
-              }}
-            />
-            <DurationMini
-              label="r"
-              value={block.data.restMinutes}
-              disabled={isRunning}
-              onDecrease={() => {
-                setRestMinutes(block.data.restMinutes - 1)
-              }}
-              onIncrease={() => {
-                setRestMinutes(block.data.restMinutes + 1)
-              }}
-            />
-          </div>
-        ) : null}
       </div>
 
       <div

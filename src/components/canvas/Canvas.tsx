@@ -16,7 +16,7 @@ import {
   toCanvas,
   toCanvasRect,
 } from "@/lib/utils/canvas.utils"
-import { createBlockId } from "@/lib/utils/block-sanitizers"
+import { createBlockId, getBlockSizeBounds } from "@/lib/utils/block-sanitizers"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { useBlocksStore } from "@/store/blocks.store"
@@ -57,14 +57,16 @@ function markOnboardingSeen() {
 }
 
 function createBlock(type: BlockType, x: number, y: number): Block {
+  const { defaultWidth, defaultHeight } = getBlockSizeBounds(type)
+
   if (type === "tasks") {
     return {
       id: createBlockId(),
       type,
       x,
       y,
-      width: 320,
-      height: 220,
+      width: defaultWidth,
+      height: defaultHeight,
       zIndex: 10,
       data: {
         title: "tasks",
@@ -83,8 +85,8 @@ function createBlock(type: BlockType, x: number, y: number): Block {
       type,
       x,
       y,
-      width: 340,
-      height: 240,
+      width: defaultWidth,
+      height: defaultHeight,
       zIndex: 10,
       data: {
         title: "notes",
@@ -98,8 +100,8 @@ function createBlock(type: BlockType, x: number, y: number): Block {
     type,
     x,
     y,
-    width: 320,
-    height: 280,
+    width: defaultWidth,
+    height: defaultHeight,
     zIndex: 10,
     data: {
       title: "focus",

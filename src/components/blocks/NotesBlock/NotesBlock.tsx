@@ -2,7 +2,10 @@ import { memo, type HTMLAttributes } from "react"
 
 import { useBlockResize } from "@/hooks/useBlockResize"
 import { cn } from "@/lib/utils"
-import { MAX_NOTES_TEXT_LENGTH } from "@/lib/utils/block-sanitizers"
+import {
+  MAX_NOTES_TEXT_LENGTH,
+  getBlockSizeBounds,
+} from "@/lib/utils/block-sanitizers"
 
 import { useNotesBlock } from "./useNotesBlock"
 
@@ -28,6 +31,8 @@ export const NotesBlock = memo(function NotesBlock({
     return null
   }
 
+  const sizeBounds = getBlockSizeBounds(block.type)
+
   return (
     <article
       className={cn(
@@ -40,6 +45,10 @@ export const NotesBlock = memo(function NotesBlock({
         top: block.y,
         width: block.width,
         height: block.height,
+        minWidth: sizeBounds.minWidth,
+        minHeight: sizeBounds.minHeight,
+        maxWidth: sizeBounds.maxWidth,
+        maxHeight: sizeBounds.maxHeight,
         zIndex: block.zIndex,
         outline: selected ? "1.5px solid rgba(212, 105, 42, 0.7)" : "none",
         outlineOffset: selected ? "1px" : "0",

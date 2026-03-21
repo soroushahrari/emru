@@ -10,13 +10,11 @@ import {
   getRemainingMs,
   pauseTimer,
   restartTimer,
-  setDurations,
+  setDurations as normalizeDurations,
   startTimer,
   transitionPhase,
 } from "@/lib/utils/focus-timer"
 import { useBlocksStore } from "@/store/blocks.store"
-
-const TIMER_TICK_MS = 250
 
 export function useFocusBlock(blockId: string) {
   const block = useBlocksStore((state) => {
@@ -113,7 +111,7 @@ export function useFocusBlock(blockId: string) {
         return
       }
 
-      const next = setDurations(block.data, minutes, block.data.restMinutes)
+      const next = normalizeDurations(block.data, minutes, block.data.restMinutes)
       completionTokenRef.current = null
       updateBlock(blockId, { data: next })
       setNow(Date.now())
@@ -127,7 +125,21 @@ export function useFocusBlock(blockId: string) {
         return
       }
 
-      const next = setDurations(block.data, block.data.focusMinutes, minutes)
+      const next = normalizeDurations(block.data, block.data.focusMinutes, minutes)
+      completionTokenRef.current = null
+      updateBlock(blockId, { data: next })
+      setNow(Date.now())
+    },
+    [block, blockId, updateBlock]
+  )
+
+  const setDurations = useCallback(
+    (focusMinutes: number, restMinutes: number) => {
+      if (!block) {
+        return
+      }
+
+      const next = normalizeDurations(block.data, focusMinutes, restMinutes)
       completionTokenRef.current = null
       updateBlock(blockId, { data: next })
       setNow(Date.now())
@@ -153,12 +165,17 @@ export function useFocusBlock(blockId: string) {
       return
     }
 
-    const timerId = window.setInterval(() => {
+    let frameId = 0
+
+    const tick = () => {
       setNow(Date.now())
-    }, TIMER_TICK_MS)
+      frameId = window.requestAnimationFrame(tick)
+    }
+
+    frameId = window.requestAnimationFrame(tick)
 
     return () => {
-      window.clearInterval(timerId)
+      window.cancelAnimationFrame(frameId)
     }
   }, [block])
 
@@ -198,6 +215,7 @@ export function useFocusBlock(blockId: string) {
     toggleRunning,
     setFocusMinutes,
     setRestMinutes,
+    setDurations,
     toggleCompact,
   }
 }

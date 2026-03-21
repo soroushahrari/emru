@@ -13,24 +13,51 @@ import {
 
 const VALID_BLOCK_TYPES: BlockType[] = ["tasks", "notes", "focus"]
 const MAX_COORDINATE = 1_000_000
-const MIN_BLOCK_WIDTH = 160
-const MAX_BLOCK_WIDTH = 1_600
-const MAX_BLOCK_HEIGHT = 1_600
 const MAX_TITLE_LENGTH = 120
 const MAX_TASK_ITEMS = 1_000
 const MAX_TASK_ITEM_LENGTH = 280
 export const MAX_NOTES_TEXT_LENGTH = 20_000
 
+interface BlockSizeBounds {
+  defaultWidth: number
+  defaultHeight: number
+  minWidth: number
+  minHeight: number
+  maxWidth: number
+  maxHeight: number
+}
+
+const BLOCK_SIZE_BOUNDS: Record<BlockType, Readonly<BlockSizeBounds>> = {
+  tasks: {
+    defaultWidth: 320,
+    defaultHeight: 220,
+    minWidth: 240,
+    minHeight: 170,
+    maxWidth: 760,
+    maxHeight: 680,
+  },
+  notes: {
+    defaultWidth: 340,
+    defaultHeight: 240,
+    minWidth: 260,
+    minHeight: 180,
+    maxWidth: 880,
+    maxHeight: 760,
+  },
+  focus: {
+    defaultWidth: 312,
+    defaultHeight: 288,
+    minWidth: 260,
+    minHeight: 236,
+    maxWidth: 460,
+    maxHeight: 420,
+  },
+}
+
 const DEFAULT_TITLE: Record<BlockType, string> = {
   tasks: "tasks",
   notes: "notes",
   focus: "focus",
-}
-
-const DEFAULT_SIZE: Record<BlockType, { width: number; height: number }> = {
-  tasks: { width: 320, height: 220 },
-  notes: { width: 340, height: 240 },
-  focus: { width: 320, height: 280 },
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -170,12 +197,8 @@ export function createBlockId() {
   return `block-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 }
 
-export function getMinimumBlockHeight(type: BlockType) {
-  if (type === "focus") {
-    return 240
-  }
-
-  return 120
+export function getBlockSizeBounds(type: BlockType) {
+  return BLOCK_SIZE_BOUNDS[type]
 }
 
 export function sanitizeBlock(input: unknown): Block | null {
@@ -189,20 +212,19 @@ export function sanitizeBlock(input: unknown): Block | null {
     return null
   }
 
-  const defaults = DEFAULT_SIZE[type]
-  const minHeight = getMinimumBlockHeight(type)
+  const sizeBounds = getBlockSizeBounds(type)
   const width = Math.round(
     clamp(
-      asFiniteNumber(candidate.width, defaults.width),
-      MIN_BLOCK_WIDTH,
-      MAX_BLOCK_WIDTH
+      asFiniteNumber(candidate.width, sizeBounds.defaultWidth),
+      sizeBounds.minWidth,
+      sizeBounds.maxWidth
     )
   )
   const height = Math.round(
     clamp(
-      asFiniteNumber(candidate.height, defaults.height),
-      minHeight,
-      MAX_BLOCK_HEIGHT
+      asFiniteNumber(candidate.height, sizeBounds.defaultHeight),
+      sizeBounds.minHeight,
+      sizeBounds.maxHeight
     )
   )
   const x = clamp(

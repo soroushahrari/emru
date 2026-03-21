@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import type React from "react"
 
-import { getMinimumBlockHeight } from "@/lib/utils/block-sanitizers"
+import { getBlockSizeBounds } from "@/lib/utils/block-sanitizers"
 import { useBlocksStore, type BlocksSnapshot } from "@/store/blocks.store"
 import { useCanvasStore } from "@/store/canvas.store"
 
@@ -12,6 +12,10 @@ interface ResizeSession {
   startWidth: number
   startHeight: number
   moved: boolean
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
 }
 
 export function useBlockResize(blockId: string) {
@@ -58,14 +62,20 @@ export function useBlockResize(blockId: string) {
       return
     }
 
-    const nextWidth = Math.max(
-      160,
-      session.startWidth + (event.clientX - session.startX)
+    const sizeBounds = getBlockSizeBounds(block.type)
+    const nextWidth = Math.round(
+      clamp(
+        session.startWidth + (event.clientX - session.startX),
+        sizeBounds.minWidth,
+        sizeBounds.maxWidth
+      )
     )
-    const minimumHeight = getMinimumBlockHeight(block.type)
-    const nextHeight = Math.max(
-      minimumHeight,
-      session.startHeight + (event.clientY - session.startY)
+    const nextHeight = Math.round(
+      clamp(
+        session.startHeight + (event.clientY - session.startY),
+        sizeBounds.minHeight,
+        sizeBounds.maxHeight
+      )
     )
 
     useBlocksStore
