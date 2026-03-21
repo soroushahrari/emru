@@ -7,7 +7,6 @@ import {
   type HTMLAttributes,
   type CSSProperties,
 } from "react"
-import { LayoutGroup, motion } from "motion/react"
 
 import { Button } from "@/components/ui/button"
 import { useBlockResize } from "@/hooks/useBlockResize"
@@ -21,6 +20,13 @@ import { NotesContent } from "./NotesContent"
 import { NotesModal } from "./NotesModal"
 import { getNoteCounts, type NoteSaveState } from "./notes-utils"
 import { useNotesBlock } from "./useNotesBlock"
+
+interface NotesModalOriginRect {
+  left: number
+  top: number
+  width: number
+  height: number
+}
 
 interface NotesBlockProps {
   blockId: string
@@ -67,9 +73,11 @@ export const NotesBlock = memo(function NotesBlock({
 }: NotesBlockProps) {
   const { block, setText } = useNotesBlock(blockId)
   const { resizeHandleProps } = useBlockResize(blockId)
+  const articleRef = useRef<HTMLElement | null>(null)
   const [isEditingInline, setIsEditingInline] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalEditing, setIsModalEditing] = useState(false)
+  const [modalOriginRect, setModalOriginRect] = useState<NotesModalOriginRect | null>(null)
   const [saveState, setSaveState] = useState<NoteSaveState>("autosaved")
   const saveTimeoutRef = useRef<number | null>(null)
 
@@ -85,6 +93,7 @@ export const NotesBlock = memo(function NotesBlock({
     setIsEditingInline(false)
     setIsModalOpen(false)
     setIsModalEditing(false)
+    setModalOriginRect(null)
     setSaveState("autosaved")
   }, [blockId])
 
@@ -101,7 +110,6 @@ export const NotesBlock = memo(function NotesBlock({
   const headerMargin = isMicro ? "mb-2" : isCompact ? "mb-2.5" : "mb-3"
   const shellPadding = isMicro ? "p-2.5" : isCompact ? "p-2.5" : "p-3"
   const headerChrome = isMicro ? "px-2 py-1" : isCompact ? "px-2.5 py-1.25" : "px-2.5 py-1.5"
-  const notesLayoutId = `notes-shell-${blockId}`
 
   function updateText(nextText: string) {
     setSaveState("saving")
@@ -117,20 +125,34 @@ export const NotesBlock = memo(function NotesBlock({
     }, 420)
   }
 
+  function captureModalOriginRect() {
+    const rect = articleRef.current?.getBoundingClientRect()
+
+    if (!rect) {
+      setModalOriginRect(null)
+      return
+    }
+
+    setModalOriginRect({
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    })
+  }
+
   return (
-    <LayoutGroup id={`notes-layout-${blockId}`}>
-      <motion.article
-        layoutId={notesLayoutId}
-        transition={{
-          duration: 0.42,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+    <>
+      <article
+        ref={articleRef}
         className={cn(
           "canvas-block-shell absolute flex min-w-0 flex-col overflow-hidden rounded-2xl bg-card shadow-[0_6px_20px_rgba(0,0,0,0.16)]",
+          isModalOpen && "notes-block-shell-hidden",
           shellPadding,
           "select-none canvas-block-enter",
           landed && "canvas-drag-landed"
         )}
+        aria-hidden={isModalOpen}
         style={{
           left: block.x,
           top: block.y,
@@ -180,6 +202,7 @@ export const NotesBlock = memo(function NotesBlock({
             className="notes-expand-button rounded-full text-muted-foreground"
             aria-label="Open note in focus mode"
             onClick={() => {
+              captureModalOriginRect()
               setIsEditingInline(false)
               setIsModalOpen(true)
             }}
@@ -216,14 +239,14 @@ export const NotesBlock = memo(function NotesBlock({
           data-visible={selected ? "true" : undefined}
           {...resizeHandleProps}
         />
-      </motion.article>
+      </article>
 
       <NotesModal
         open={isModalOpen}
         title={displayTitle}
         text={block.data.text}
         isEditing={isModalEditing}
-        layoutId={notesLayoutId}
+        originRect={modalOriginRect}
         saveState={saveState}
         words={counts.words}
         characters={counts.characters}
@@ -232,6 +255,7 @@ export const NotesBlock = memo(function NotesBlock({
           setIsModalOpen(open)
           if (!open) {
             setIsModalEditing(false)
+            setModalOriginRect(null)
           }
         }}
         onBeginEditing={() => {
@@ -242,6 +266,6 @@ export const NotesBlock = memo(function NotesBlock({
         }}
         onChangeText={updateText}
       />
-    </LayoutGroup>
+    </>
   )
 })

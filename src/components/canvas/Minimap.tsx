@@ -17,6 +17,11 @@ interface DragSession {
   pointerId: number
 }
 
+interface MinimapProps {
+  activeBlockId?: string | null
+  relatedBlockIds?: string[]
+}
+
 function useViewportSize() {
   const [size, setSize] = useState({
     width: window.innerWidth,
@@ -37,7 +42,10 @@ function useViewportSize() {
   return size
 }
 
-export const Minimap = memo(function Minimap() {
+export const Minimap = memo(function Minimap({
+  activeBlockId = null,
+  relatedBlockIds = [],
+}: MinimapProps) {
   const blocksMap = useBlocksStore((state) => state.blocks)
   const offsetX = useCanvasStore((state) => state.offsetX)
   const offsetY = useCanvasStore((state) => state.offsetY)
@@ -47,6 +55,7 @@ export const Minimap = memo(function Minimap() {
   const [isDraggingViewport, setIsDraggingViewport] = useState(false)
   const pendingCenterRef = useRef<{ x: number; y: number } | null>(null)
   const rafRef = useRef<number | null>(null)
+  const relatedIdSet = useMemo(() => new Set(relatedBlockIds), [relatedBlockIds])
   const blocks = useMemo(() => Object.values(blocksMap), [blocksMap])
   const sortedBlocks = useMemo(
     () => [...blocks].sort((a, b) => a.zIndex - b.zIndex),
@@ -228,7 +237,14 @@ export const Minimap = memo(function Minimap() {
       {renderedBlocks.map((block) => (
         <div
           key={block.id}
-          className="absolute rounded-sm bg-foreground/30"
+          className={cn(
+            "absolute rounded-sm transition-[background-color,box-shadow,opacity] duration-150",
+            block.id === activeBlockId
+              ? "bg-primary/70 shadow-[0_0_0_1px_rgba(212,105,42,0.42)]"
+              : relatedIdSet.has(block.id)
+                ? "bg-primary/38"
+                : "bg-foreground/30"
+          )}
           style={{
             left: toMinimapX(block.x),
             top: toMinimapY(block.y),

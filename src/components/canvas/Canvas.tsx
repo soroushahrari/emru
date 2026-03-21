@@ -25,6 +25,7 @@ import type { Block, BlockType } from "@/types/block.types"
 import type { ScreenRect } from "@/types/canvas.types"
 import { Toolbar } from "@/components/toolbar"
 
+import { ArrangementGuides } from "./ArrangementGuides"
 import { Minimap } from "./Minimap"
 import { SelectionRect } from "./SelectionRect"
 import { TransformLayer } from "./TransformLayer"
@@ -157,6 +158,7 @@ export function Canvas() {
   const tool = useCanvasStore((state) => state.tool)
   const zoom = useCanvasStore((state) => state.zoom)
   const activeCursor = useCanvasStore((state) => state.activeCursor)
+  const arrangement = useCanvasStore((state) => state.arrangement)
   const blockCount = useBlocksStore((state) => Object.keys(state.blocks).length)
   const hasFocusBlock = useBlocksStore((state) =>
     Object.values(state.blocks).some((block) => block.type === "focus")
@@ -478,6 +480,7 @@ export function Canvas() {
         settingsOpen={isSettingsOpen}
       />
       <TransformLayer transition={transition} />
+      <ArrangementGuides guides={arrangement.guides} />
       <SelectionRect rect={selectionRect} />
       <ZoomControls
         zoom={zoom}
@@ -485,7 +488,10 @@ export function Canvas() {
         onZoomOut={zoomOut}
         onReset={resetZoomToOne}
       />
-      <Minimap />
+      <Minimap
+        activeBlockId={arrangement.activeBlockId}
+        relatedBlockIds={arrangement.relatedBlockIds}
+      />
       <div className="fixed top-3 right-2 z-50 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-3 sm:top-4 sm:right-4 sm:w-72">
         <aside
           className={cn(

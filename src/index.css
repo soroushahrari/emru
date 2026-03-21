@@ -702,6 +702,11 @@
     background: color-mix(in oklab, var(--secondary) 14%, transparent);
   }
 
+  .notes-block-shell-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .notes-body-surface {
     min-width: 0;
     min-height: 0;
@@ -1130,6 +1135,15 @@
     box-shadow:
       0 20px 64px rgba(0, 0, 0, 0.22),
       inset 0 0 0 1px color-mix(in oklab, var(--border) 10%, transparent);
+  }
+
+  .notes-dialog-content {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    flex-direction: column;
+    will-change: opacity, transform;
   }
 
   @media (max-width: 640px) {
@@ -1875,7 +1889,7 @@
 }
 
 .canvas-drag-landed {
-  animation: canvas-drag-landed 180ms var(--ease-out-quart);
+  animation: canvas-drag-landed 240ms var(--ease-out-expo);
 }
 
 @keyframes canvas-block-enter {
@@ -1891,12 +1905,53 @@
 }
 
 @keyframes canvas-drag-landed {
+  0% {
+    transform: translateY(-1.5px) scale(1.012);
+  }
+
+  58% {
+    transform: translateY(0.35px) scale(0.998);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.canvas-arrangement-line,
+.canvas-arrangement-gap {
+  vector-effect: non-scaling-stroke;
+  animation: canvas-arrangement-enter 120ms var(--ease-out-quart);
+}
+
+.canvas-arrangement-line {
+  fill: none;
+  stroke: color-mix(in oklab, var(--ember) 54%, transparent);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.78;
+}
+
+.canvas-arrangement-line-center {
+  stroke: color-mix(in oklab, var(--dawn) 60%, transparent);
+  stroke-dasharray: 3.5 4.5;
+  opacity: 0.68;
+}
+
+.canvas-arrangement-gap {
+  fill: color-mix(in oklab, var(--ember) 42%, transparent);
+  stroke: color-mix(in oklab, var(--ember) 44%, transparent);
+  stroke-width: 1;
+  opacity: 0.72;
+}
+
+@keyframes canvas-arrangement-enter {
   from {
-    transform: scale(1.005);
+    opacity: 0;
   }
 
   to {
-    transform: scale(1);
+    opacity: 1;
   }
 }
 

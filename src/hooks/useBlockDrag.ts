@@ -1,15 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core"
 
+import {
+  resolveMagneticArrangement,
+  type ArrangementState,
+} from "@/lib/utils/arrangement.utils"
 import { useBlocksStore, type BlocksSnapshot } from "@/store/blocks.store"
 import { useCanvasStore } from "@/store/canvas.store"
 
 type PositionMap = Record<string, { x: number; y: number }>
 
+const EMPTY_ARRANGEMENT_STATE: ArrangementState = {
+  activeBlockId: null,
+  guides: [],
+  relatedBlockIds: [],
+}
+
 export function useBlockDrag() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [draggingIdsState, setDraggingIdsState] = useState<string[]>([])
   const [landedIdsState, setLandedIdsState] = useState<string[]>([])
+  const [arrangementState, setArrangementState] = useState<ArrangementState>(
+    EMPTY_ARRANGEMENT_STATE
+  )
   const movingIdsRef = useRef<string[]>([])
   const startPositionsRef = useRef<PositionMap>({})
   const snapshotRef = useRef<BlocksSnapshot | null>(null)
@@ -26,10 +39,12 @@ export function useBlockDrag() {
   const reset = () => {
     setActiveDragId(null)
     setDraggingIdsState([])
+    setArrangementState(EMPTY_ARRANGEMENT_STATE)
     movingIdsRef.current = []
     startPositionsRef.current = {}
     snapshotRef.current = null
     const canvasState = useCanvasStore.getState()
+    canvasState.clearArrangement()
     canvasState.setCursor(canvasState.tool === "pan" ? "grab" : "default")
   }
 
@@ -54,6 +69,13 @@ export function useBlockDrag() {
     blocksStore.bringToFront(blockId)
     canvasStore.setCursor("grabbing")
     setActiveDragId(blockId)
+    const nextArrangement = {
+      activeBlockId: blockId,
+      guides: [],
+      relatedBlockIds: [],
+    }
+    setArrangementState(nextArrangement)
+    canvasStore.setArrangement(nextArrangement)
 
     movingIdsRef.current = movingIds
     setDraggingIdsState(movingIds)
@@ -80,24 +102,29 @@ export function useBlockDrag() {
     }
 
     const zoom = useCanvasStore.getState().zoom
-    const updates = movingIdsRef.current
-      .map((id) => {
-        const start = startPositionsRef.current[id]
-        if (!start) {
-          return null
-        }
-
-        return {
-          id,
-          x: start.x + event.delta.x / zoom,
-          y: start.y + event.delta.y / zoom,
-        }
-      })
-      .filter((update): update is { id: string; x: number; y: number } =>
-        Boolean(update)
-      )
+    const result = resolveMagneticArrangement({
+      activeBlockId: activeDragId,
+      movingIds: movingIdsRef.current,
+      startPositions: startPositionsRef.current,
+      deltaX: event.delta.x,
+      deltaY: event.delta.y,
+      zoom,
+      blocks: useBlocksStore.getState().blocks,
+    })
+    const updates = Object.entries(result.positions).map(([id, position]) => ({
+      id,
+      x: position.x,
+      y: position.y,
+    }))
 
     useBlocksStore.getState().setBlocksPosition(updates)
+    const nextArrangement = {
+      activeBlockId: activeDragId,
+      guides: result.guides,
+      relatedBlockIds: result.relatedBlockIds,
+    }
+    setArrangementState(nextArrangement)
+    useCanvasStore.getState().setArrangement(nextArrangement)
   }
 
   const onDragEnd = (event: DragEndEvent) => {
@@ -138,6 +165,7 @@ export function useBlockDrag() {
 
   return {
     activeDragId,
+    arrangementState,
     draggingIds,
     landedIds,
     onDragStart,

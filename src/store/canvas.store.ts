@@ -2,10 +2,16 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 import { clampZoom } from "@/lib/utils/canvas.utils"
+import type { ArrangementState } from "@/lib/utils/arrangement.utils"
 import type { CanvasCursor, CanvasTool } from "@/types/canvas.types"
 
 const MIN_ZOOM = 0.02
 const MAX_ZOOM = 2
+const EMPTY_ARRANGEMENT: ArrangementState = {
+  activeBlockId: null,
+  guides: [],
+  relatedBlockIds: [],
+}
 
 interface CanvasStore {
   offsetX: number
@@ -14,6 +20,7 @@ interface CanvasStore {
   tool: CanvasTool
   selectedIds: string[]
   activeCursor: CanvasCursor
+  arrangement: ArrangementState
   setOffset: (x: number, y: number) => void
   setZoom: (zoom: number) => void
   zoomAround: (newZoom: number, screenX: number, screenY: number) => void
@@ -21,6 +28,8 @@ interface CanvasStore {
   select: (ids: string[]) => void
   clearSelection: () => void
   setCursor: (cursor: CanvasCursor) => void
+  setArrangement: (arrangement: ArrangementState) => void
+  clearArrangement: () => void
 }
 
 function isCanvasTool(value: unknown): value is CanvasTool {
@@ -44,6 +53,7 @@ export const useCanvasStore = create<CanvasStore>()(
       tool: "select",
       selectedIds: [],
       activeCursor: "default",
+      arrangement: EMPTY_ARRANGEMENT,
       setOffset: (x, y) => {
         set({ offsetX: x, offsetY: y })
       },
@@ -68,6 +78,12 @@ export const useCanvasStore = create<CanvasStore>()(
       },
       setCursor: (cursor) => {
         set({ activeCursor: cursor })
+      },
+      setArrangement: (arrangement) => {
+        set({ arrangement })
+      },
+      clearArrangement: () => {
+        set({ arrangement: EMPTY_ARRANGEMENT })
       },
     }),
     {
@@ -98,6 +114,7 @@ export const useCanvasStore = create<CanvasStore>()(
           tool,
           selectedIds: [],
           activeCursor: (tool === "pan" ? "grab" : "default") as CanvasCursor,
+          arrangement: EMPTY_ARRANGEMENT,
         }
       },
     }
