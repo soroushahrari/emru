@@ -6,6 +6,8 @@ import {
   type ButtonHTMLAttributes,
   type ReactNode,
 } from "react"
+import { Settings01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 import {
   Tooltip,
@@ -249,16 +251,13 @@ export const Toolbar = memo(function Toolbar({
         className={!settingsOpen ? "bg-secondary/35" : undefined}
         onClick={onToggleSettings}
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-          <path
-            d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8 3.5-1.8.9a6.6 6.6 0 0 1-.5 1.3l1 1.8-1.9 1.9-1.8-1a6.6 6.6 0 0 1-1.3.5L12 20l-2.7-.8a6.6 6.6 0 0 1-1.3-.5l-1.8 1-1.9-1.9 1-1.8a6.6 6.6 0 0 1-.5-1.3L4 12l.8-2.7a6.6 6.6 0 0 1 .5-1.3l-1-1.8 1.9-1.9 1.8 1a6.6 6.6 0 0 1 1.3-.5L12 4l2.7.8a6.6 6.6 0 0 1 1.3.5l1.8-1 1.9 1.9-1 1.8c.2.4.4.9.5 1.3L20 12Z"
-            fill="none"
-            stroke={iconStroke}
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <HugeiconsIcon
+          icon={Settings01Icon}
+          size={20}
+          strokeWidth={1.6}
+          className="h-5 w-5"
+          aria-hidden="true"
+        />
       </TooltipIconButton>
     </header>
   )

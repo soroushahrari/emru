@@ -696,6 +696,466 @@
     transform: scale(1.08);
   }
 
+  .notes-card-frame {
+    min-height: 0;
+    border-radius: calc(var(--radius-xl) + 2px);
+    background: color-mix(in oklab, var(--secondary) 14%, transparent);
+  }
+
+  .notes-body-surface {
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    padding: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .notes-body-surface[data-density="compact"] {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .notes-body-surface[data-density="micro"] {
+    padding: 0.72rem 0.78rem;
+  }
+
+  .notes-body-surface[data-surface="modal"] {
+    padding: 1rem 1.2rem 0;
+  }
+
+  .notes-body-surface[data-editing="true"] {
+    overflow: hidden;
+  }
+
+  .notes-body-surface:hover,
+  .notes-body-surface:focus-within {
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 24%, transparent)
+      transparent;
+  }
+
+  .notes-body-surface::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  .notes-body-surface::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .notes-body-surface::-webkit-scrollbar-thumb {
+    border: 0.18rem solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    background-clip: content-box;
+  }
+
+  .notes-body-surface:hover::-webkit-scrollbar-thumb,
+  .notes-body-surface:focus-within::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--muted-foreground) 22%, transparent);
+    background-clip: content-box;
+  }
+
+  .notes-preview-shell {
+    appearance: none;
+    cursor: text;
+    min-height: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    border-radius: var(--radius-lg);
+    color: inherit;
+    outline: none;
+  }
+
+  .canvas-block-title {
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.024em;
+    font-kerning: normal;
+  }
+
+  .canvas-block-modal-title {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-kerning: normal;
+  }
+
+  .canvas-block-copy {
+    font-size: 1rem;
+    line-height: 1.68;
+    letter-spacing: -0.011em;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+  }
+
+  .notes-preview-shell:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 46%, transparent);
+    outline-offset: 2px;
+  }
+
+  .notes-preview-placeholder {
+    color: color-mix(in oklab, var(--muted-foreground) 84%, transparent);
+    font-size: 1rem;
+    line-height: 1.72;
+    letter-spacing: -0.01em;
+  }
+
+  .notes-preview-shell .tiptap {
+    min-height: 100%;
+    color: color-mix(in oklab, var(--foreground) 96%, transparent);
+    font-size: 1rem;
+    line-height: 1.78;
+    letter-spacing: -0.011em;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+    overflow-wrap: anywhere;
+  }
+
+  .notes-body-surface[data-density="compact"] .notes-preview-shell .tiptap {
+    line-height: 1.72;
+  }
+
+  .notes-body-surface[data-density="micro"] .notes-preview-shell .tiptap,
+  .notes-body-surface[data-density="micro"] .notes-preview-placeholder {
+    font-size: 1rem;
+    line-height: 1.64;
+  }
+
+  .notes-body-surface[data-surface="modal"] .notes-preview-shell .tiptap {
+    font-size: 1.04rem;
+    line-height: 1.84;
+  }
+
+  .notes-preview-shell .tiptap > * + * {
+    margin-top: 1.05rem;
+  }
+
+  .notes-body-surface[data-density="micro"] .notes-preview-shell .tiptap > * + * {
+    margin-top: 0.8rem;
+  }
+
+  .notes-preview-shell .tiptap p {
+    margin: 0;
+  }
+
+  .notes-preview-shell .tiptap h1,
+  .notes-preview-shell .tiptap h2,
+  .notes-preview-shell .tiptap h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+    line-height: 1.14;
+    color: color-mix(in oklab, var(--foreground) 98%, transparent);
+    font-kerning: normal;
+  }
+
+  .notes-preview-shell .tiptap h1 {
+    font-size: 1.38em;
+  }
+
+  .notes-preview-shell .tiptap h2 {
+    font-size: 1.2em;
+  }
+
+  .notes-preview-shell .tiptap h3 {
+    font-size: 1.08em;
+  }
+
+  .notes-preview-shell .tiptap ul,
+  .notes-preview-shell .tiptap ol {
+    margin: 0;
+    padding-inline-start: 1.15rem;
+    list-style-position: outside;
+  }
+
+  .notes-preview-shell .tiptap ul {
+    list-style-type: disc;
+  }
+
+  .notes-preview-shell .tiptap ol {
+    list-style-type: decimal;
+  }
+
+  .notes-preview-shell .tiptap li + li {
+    margin-top: 0.35rem;
+  }
+
+  .notes-preview-shell .tiptap blockquote {
+    margin: 0;
+    border-inline-start: 1px solid
+      color-mix(in oklab, var(--border) 28%, transparent);
+    padding-inline-start: 0.85rem;
+    color: color-mix(in oklab, var(--foreground) 82%, transparent);
+  }
+
+  .notes-preview-shell .tiptap code {
+    border-radius: 0.35rem;
+    background: color-mix(in oklab, var(--secondary) 26%, transparent);
+    padding: 0.08rem 0.34rem;
+    font-size: 0.92em;
+  }
+
+  .notes-preview-shell .tiptap pre {
+    margin: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 18%, transparent)
+      transparent;
+    border-radius: calc(var(--radius-lg) - 1px);
+    background: color-mix(in oklab, var(--background) 18%, var(--card));
+    padding: 0.9rem 1rem;
+  }
+
+  .notes-preview-shell .tiptap pre::-webkit-scrollbar {
+    height: 0.45rem;
+    width: 0.45rem;
+  }
+
+  .notes-preview-shell .tiptap pre::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .notes-preview-shell .tiptap pre::-webkit-scrollbar-thumb {
+    border: 0.14rem solid transparent;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--muted-foreground) 18%, transparent);
+    background-clip: content-box;
+  }
+
+  .notes-preview-shell .tiptap pre code {
+    background: transparent;
+    padding: 0;
+  }
+
+  .notes-preview-shell .tiptap a {
+    color: color-mix(in oklab, var(--foreground) 88%, var(--primary));
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--primary) 34%, transparent);
+    text-underline-offset: 0.16rem;
+  }
+
+  .notes-editor-shell {
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    color: color-mix(in oklab, var(--foreground) 96%, transparent);
+    font-size: 1rem;
+    line-height: 1.72;
+    letter-spacing: -0.011em;
+    font-kerning: normal;
+    outline: none;
+  }
+
+  .notes-body-surface[data-density="compact"] .notes-editor-shell {
+    line-height: 1.66;
+  }
+
+  .notes-body-surface[data-density="micro"] .notes-editor-shell {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .notes-body-surface[data-surface="modal"] .notes-editor-shell {
+    font-size: 1.04rem;
+    line-height: 1.76;
+  }
+
+  .notes-editor-shell:hover,
+  .notes-editor-shell:focus {
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 22%, transparent)
+      transparent;
+  }
+
+  .notes-editor-shell::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  .notes-editor-shell::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .notes-editor-shell::-webkit-scrollbar-thumb {
+    border: 0.18rem solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    background-clip: content-box;
+  }
+
+  .notes-editor-shell:hover::-webkit-scrollbar-thumb,
+  .notes-editor-shell:focus::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--muted-foreground) 22%, transparent);
+    background-clip: content-box;
+  }
+
+  .notes-editor-shell::placeholder {
+    color: color-mix(in oklab, var(--muted-foreground) 84%, transparent);
+  }
+
+  .notes-footer {
+    margin-top: 0.72rem;
+    min-width: 0;
+    border-top: 1px solid color-mix(in oklab, var(--border) 16%, transparent);
+    padding: 0.85rem 1rem 0.95rem;
+    background: color-mix(in oklab, var(--secondary) 16%, transparent);
+    color: color-mix(in oklab, var(--muted-foreground) 78%, transparent);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  .notes-footer[data-density="compact"] {
+    margin-top: 0.58rem;
+    padding: 0.72rem 0.9rem 0.82rem;
+  }
+
+  .notes-footer[data-density="micro"] {
+    margin-top: 0.45rem;
+    padding: 0.58rem 0.75rem 0.64rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+
+  .notes-footer[data-surface="modal"] {
+    margin-top: 0.8rem;
+    padding: 0.85rem 1.15rem 0.95rem;
+  }
+
+  .notes-footer[data-density="micro"] {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .notes-save-indicator {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 0.5rem;
+  }
+
+  .notes-save-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--accent) 72%, var(--primary));
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 12%, transparent);
+  }
+
+  .notes-save-dot[data-state="saving"] {
+    background: color-mix(in oklab, var(--primary) 72%, white 8%);
+  }
+
+  .notes-save-dot[data-state="autosaved"] {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--accent) 12%, transparent),
+      0 0 0 0.3rem color-mix(in oklab, var(--accent) 8%, transparent);
+  }
+
+  .notes-counts {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 0.38rem;
+    color: color-mix(in oklab, var(--muted-foreground) 82%, transparent);
+    min-width: 0;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .notes-footer[data-density="micro"] .notes-save-indicator {
+    gap: 0.38rem;
+  }
+
+  .notes-footer[data-density="micro"] .notes-counts {
+    gap: 0.28rem;
+  }
+
+  .notes-footer[data-density="micro"] .notes-count-chip {
+    letter-spacing: 0.04em;
+  }
+
+  .notes-count-chip {
+    color: color-mix(in oklab, var(--muted-foreground) 78%, transparent);
+  }
+
+  .notes-count-separator {
+    color: color-mix(in oklab, var(--muted-foreground) 48%, transparent);
+  }
+
+  .notes-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: color-mix(in oklab, var(--background) 68%, black 22%);
+    backdrop-filter: blur(10px);
+    will-change: opacity;
+  }
+
+  .notes-dialog-viewport {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: clamp(0.2rem, 1vw, 0.75rem);
+  }
+
+  .notes-dialog-popup {
+    width: min(56rem, calc(100vw - 0.4rem));
+    height: min(95dvh, calc(100vh - 0.4rem));
+    max-height: min(95dvh, calc(100vh - 0.4rem));
+    will-change: transform, opacity;
+  }
+
+  .notes-dialog-card {
+    display: flex;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-height: inherit;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: calc(var(--radius-2xl) + 2px);
+    background: color-mix(in oklab, var(--card) 96%, var(--background));
+    padding: clamp(1rem, 2vw, 1.4rem);
+    box-shadow:
+      0 20px 64px rgba(0, 0, 0, 0.22),
+      inset 0 0 0 1px color-mix(in oklab, var(--border) 10%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .canvas-block-modal-title {
+      font-size: 1.26rem;
+    }
+  }
+
+  .notes-modal-body {
+    flex: 1;
+    min-height: 0;
+  }
+
+  @media (max-width: 640px) {
+    .notes-dialog-popup {
+      width: min(100vw - 0.25rem, 56rem);
+      height: min(97dvh, calc(100vh - 0.25rem));
+      max-height: min(97dvh, calc(100vh - 0.25rem));
+    }
+
+    .notes-dialog-card {
+      border-radius: calc(var(--radius-xl) + 4px);
+      padding: 0.85rem;
+    }
+  }
+
   .focus-surface-compact {
     transition:
       border-color 180ms var(--ease-out-quart),
@@ -1582,6 +2042,14 @@
   .focus-style-dot,
   .focus-orb-progress,
   .focus-session-control,
+  .notes-preview-shell,
+  .notes-editor-shell,
+  .notes-dialog-backdrop,
+  .notes-dialog-popup,
+  .notes-dialog-card,
+  .notes-expand-button,
+  .notes-save-dot,
+  .notes-count-chip,
   .tasks-entry-shell,
   .tasks-entry-submit,
   .tasks-drag-handle,

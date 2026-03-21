@@ -39,9 +39,9 @@ const BLOCK_SIZE_BOUNDS: Record<BlockType, Readonly<BlockSizeBounds>> = {
   },
   notes: {
     defaultWidth: 340,
-    defaultHeight: 240,
+    defaultHeight: 248,
     minWidth: 260,
-    minHeight: 180,
+    minHeight: 196,
     maxWidth: 880,
     maxHeight: 760,
   },

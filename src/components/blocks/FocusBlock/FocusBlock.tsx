@@ -1,4 +1,6 @@
 import { memo, useEffect, useRef, useState, type HTMLAttributes } from "react"
+import { SlidersHorizontalIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 import { Button } from "@/components/ui/button"
 import { useBlockResize } from "@/hooks/useBlockResize"
@@ -56,21 +58,6 @@ function IconGrip() {
       <circle cx="12" cy="8" r="1.15" fill="currentColor" />
       <circle cx="12" cy="12" r="1.15" fill="currentColor" />
       <circle cx="12" cy="16" r="1.15" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconSettings() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
-      <path
-        d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6Zm8 3.3-1.6.8a6 6 0 0 1-.5 1.2l.9 1.5-1.8 1.8-1.5-.9a6 6 0 0 1-1.2.5L12 20l-2.3-.7a6 6 0 0 1-1.2-.5l-1.5.9-1.8-1.8.9-1.5a6 6 0 0 1-.5-1.2L4 12l.7-2.3a6 6 0 0 1 .5-1.2l-.9-1.5 1.8-1.8 1.5.9a6 6 0 0 1 1.2-.5L12 4l2.3.7a6 6 0 0 1 1.2.5l1.5-.9 1.8 1.8-.9 1.5c.2.4.4.8.5 1.2L20 12Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
     </svg>
   )
 }
@@ -285,7 +272,7 @@ export const FocusBlock = memo(function FocusBlock({
             <IconGrip />
           </span>
           <span
-            className="truncate font-medium normal-case tracking-normal text-foreground [overflow-wrap:anywhere]"
+            className="canvas-block-title truncate normal-case text-foreground [overflow-wrap:anywhere]"
             dir="auto"
           >
             Focus
@@ -437,7 +424,13 @@ export const FocusBlock = memo(function FocusBlock({
             aria-label={isSettingsView ? "Close settings" : "Open settings"}
             aria-pressed={isSettingsView}
           >
-            <IconSettings />
+            <HugeiconsIcon
+              icon={SlidersHorizontalIcon}
+              size={16}
+              strokeWidth={1.7}
+              className="size-4"
+              aria-hidden="true"
+            />
           </Button>
         </div>
       </div>

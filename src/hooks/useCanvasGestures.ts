@@ -8,6 +8,14 @@ interface CanvasGesturesOptions {
   spaceHeldRef: RefObject<boolean>
 }
 
+function getScrollLockContainer(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return null
+  }
+
+  return target.closest("[data-canvas-scroll-lock='true']") as HTMLElement | null
+}
+
 export function useCanvasGestures({
   rootRef,
   spaceHeldRef,
@@ -19,6 +27,10 @@ export function useCanvasGestures({
     }
 
     const blockWheelZoom = (event: WheelEvent) => {
+      if (getScrollLockContainer(event.target)) {
+        return
+      }
+
       event.preventDefault()
     }
 
@@ -32,6 +44,10 @@ export function useCanvasGestures({
   useGesture(
     {
       onWheel: ({ event, delta }) => {
+        if (getScrollLockContainer(event.target)) {
+          return
+        }
+
         event.preventDefault()
         const wheelEvent = event as WheelEvent
         const canvasState = useCanvasStore.getState()

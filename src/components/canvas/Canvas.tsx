@@ -102,7 +102,15 @@ function createBlock(type: BlockType, x: number, y: number): Block {
       zIndex: 10,
       data: {
         title: "notes",
-        text: "Capture thoughts, links, and rough ideas here.",
+        text: [
+          "Deep work notes",
+          "",
+          "The interplay between warm surfaces and restrained typography keeps the workspace grounded.",
+          "",
+          "- Preview by default",
+          "- Raw Markdown on focus",
+          "- Expand when you need room to think",
+        ].join("\n"),
       },
     }
   }

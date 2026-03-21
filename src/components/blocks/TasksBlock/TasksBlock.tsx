@@ -197,7 +197,7 @@ export const TasksBlock = memo(function TasksBlock({
   const headerChrome = isMicro ? "px-2 py-1" : "px-2.5 py-1.5"
   const formMargin = isMicro ? "mb-2" : "mb-3"
   const itemGap = isMicro ? "gap-1" : "gap-1.5"
-  const itemTextSize = isMicro ? "text-sm" : "text-[0.95rem]"
+  const copyTextSize = isMicro ? "text-[0.95rem]" : "text-base"
   const chromeButtonSize = isMicro ? "icon-sm" : "icon"
   const toggleButtonSize = isMicro ? "xs" : "sm"
   const canSubmitTask = draft.trim().length > 0 && !isTaskLimitReached
@@ -347,7 +347,7 @@ export const TasksBlock = memo(function TasksBlock({
           </span>
           <span
             className={cn(
-              "min-w-0 truncate font-medium normal-case tracking-normal text-foreground [overflow-wrap:anywhere]"
+              "canvas-block-title min-w-0 truncate normal-case text-foreground [overflow-wrap:anywhere]"
             )}
             dir="auto"
           >
@@ -388,7 +388,10 @@ export const TasksBlock = memo(function TasksBlock({
           dir="auto"
           aria-label="Add a task"
           enterKeyHint="done"
-          className="tasks-entry-input min-w-0 flex-1 select-text bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/62"
+          className={cn(
+            "canvas-block-copy tasks-entry-input min-w-0 flex-1 select-text bg-transparent text-foreground outline-none placeholder:text-muted-foreground/62",
+            copyTextSize
+          )}
         />
         <Button
           type="submit"
@@ -469,8 +472,8 @@ export const TasksBlock = memo(function TasksBlock({
                   <button
                     type="button"
                     className={cn(
-                      "tasks-item-text min-w-0 flex-1 text-left leading-[1.45] text-foreground outline-none transition-colors",
-                      itemTextSize,
+                      "canvas-block-copy tasks-item-text min-w-0 flex-1 text-left text-foreground outline-none transition-colors",
+                      copyTextSize,
                       item.completed && "text-muted-foreground/45 line-through"
                     )}
                     dir="auto"
@@ -497,7 +500,12 @@ export const TasksBlock = memo(function TasksBlock({
             ))}
           </ul>
         ) : (
-          <div className="tasks-empty flex flex-1 items-center justify-center px-2 py-3 text-center text-sm text-muted-foreground">
+          <div
+            className={cn(
+              "canvas-block-copy tasks-empty flex flex-1 items-center justify-center px-2 py-3 text-center text-muted-foreground",
+              copyTextSize
+            )}
+          >
             {hiddenDoneCount > 0
               ? "Completed tasks are hidden."
               : "Add one clear next action to get started."}
